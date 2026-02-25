@@ -17,7 +17,9 @@
     "lint": "eslint src/ tests/src/",
     "lint:fix": "eslint src/ tests/src/ --fix",
     "format": "prettier --write \"src/**/*.ts\" \"tests/src/**/*.ts\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "docs:build": "npx honkit@5.1.4 build docs docs-site",
+    "docs:serve": "npx honkit@5.1.4 serve docs"
   },
   "repository": {
     "type": "git",

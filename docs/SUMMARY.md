@@ -1,0 +1,35 @@
+# Summary
+
+- [Introduction](README.md)
+- [Getting Started]
+  - [Installation](getting-started/installation.md)
+  - [Configuration](getting-started/configuration.md)
+  - [Quick Start](getting-started/quickstart.md)
+- [Core Concepts]
+  - [How Sylva Works](concepts/pipeline.md)
+  - [RLM Agent](concepts/rlm.md)
+  - [Source Tree Serialization](concepts/serialization.md)
+  - [Prompt Engineering Internals](concepts/prompts.md)
+- [Models & Providers]
+  - [Supported Models](models/supported.md)
+  - [Choosing the Right Model](models/choosing.md)
+  - [Iteration Depth Guide](models/iterations.md)
+- [CLI Reference]
+  - [Commands & Flags](cli/commands.md)
+  - [Environment Variables](cli/environment.md)
+  - [Exit Codes](cli/exit-codes.md)
+- [Output Format]
+  - [AGENTS.md Sections](output/sections.md)
+  - [Customizing Output](output/customizing.md)
+- [Advanced Usage]
+  - [Monorepo Analysis](advanced/monorepo.md)
+  - [GitHub Repository Analysis](advanced/github-repos.md)
+  - [CI/CD Integration](advanced/cicd.md)
+  - [Troubleshooting](advanced/troubleshooting.md)
+- [Architecture]
+  - [Internal Architecture](architecture/internals.md)
+  - [Extending Sylva](architecture/extending.md)
+- [Contributing]
+  - [Development Setup](contributing/setup.md)
+  - [Code Quality & Hooks](contributing/quality.md)
+  - [Pull Request Guidelines](contributing/pr-guidelines.md)
