@@ -4,9 +4,14 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "start": "ts-node src/cli.ts",
     "build": "tsc",
-    "start": "node dist/cli.js",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/ tests/src/",
+    "lint:fix": "eslint src/ tests/src/ --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/src/**/*.ts\"",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -29,6 +34,12 @@
     "vitest": "^4.0.18"
   },
   "devDependencies": {
-    "@types/node": "^25.3.0"
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.3.0",
+    "eslint": "^10.0.2",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "prettier": "^3.8.1",
+    "typescript-eslint": "^8.56.1"
   }
 }
