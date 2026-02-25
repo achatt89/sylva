@@ -1,0 +1,34 @@
+{
+  "name": "sylva",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/achatt89/sylva.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/achatt89/sylva/issues"
+  },
+  "homepage": "https://github.com/achatt89/sylva#readme",
+  "dependencies": {
+    "@ax-llm/ax": "^19.0.2",
+    "commander": "^14.0.3",
+    "dotenv": "^17.3.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0"
+  }
+}
