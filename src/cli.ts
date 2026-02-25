@@ -10,10 +10,11 @@ import { resolveModelConfig, getLanguageModelService, listSupportedModels } from
 import { cloneRepo, loadSourceTree, saveAgentsToDisk, compileAgentsMd } from "./utils";
 import { CodebaseConventionExtractor, AgentsMdCreator } from "./modules";
 
-dotenv.config();
-
 function initEnvironment() {
-  dotenv.config({ path: path.resolve(process.cwd(), ".env") });
+  const envPath = path.resolve(process.cwd(), ".env");
+  if (fs.existsSync(envPath)) {
+    dotenv.config({ path: envPath, override: true });
+  }
 }
 
 export async function resolveRepositoryTarget(args: any): Promise<{

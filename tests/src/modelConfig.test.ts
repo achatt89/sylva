@@ -25,7 +25,7 @@ describe("modelConfig", () => {
       const config = resolveModelConfig("openai");
 
       expect(config.provider).toBe(PROVIDER_OPENAI);
-      expect(config.model).toBe("openai/gpt-5.3");
+      expect(config.model).toBe("openai/gpt-4o");
     });
 
     it("resolves a specific model string when provided", () => {
