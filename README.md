@@ -4,6 +4,8 @@ Sylva is an automated AI tool to auto-generate comprehensive `AGENTS.md` and `CO
 
 It extracts the folder structures, code conventions, state management patterns, and specific architecture styles embedded in your code directly into a format that future AI Coding Assistants (or human engineers) can perfectly follow.
 
+📖 **[Full Documentation](https://achatt89.github.io/sylva/)**
+
 ### Features
 - Support for OpenAI, Google Gemini, Anthropic, and Azure LLMs.
 - Direct `--github-repository` fetching using Git Clone.
@@ -52,18 +54,31 @@ sylva --help
 
 Alternatively, if running from source:
 ```bash
-npm start -- --github-repository https://github.com/expressjs/express -m openai/gpt-5.3
-```
-
-**Positional Default Search (from source):**
-```bash
-npm start -- ./my-local-codebase
+npm start -- --github-repository https://github.com/expressjs/express -m openai/gpt-4o
 ```
 
 **List Supported Models:**
 ```bash
-npm start -- --list-models
+npx sylva --list-models
 ```
+
+### Advanced Usage: Tuning for Your Project
+
+The iteration count (`-i`) and model choice (`-m`) dramatically affect output accuracy. Here's a battle-tested guide:
+
+| Project Type | Example | Command | Rationale |
+|---|---|---|---|
+| **Small library** (<20 files) | `pallets/click` | `npx sylva -m openai/gpt-4o -i 1` | Entire codebase fits in one context pass |
+| **Medium app** (20-100 files) | `expressjs/express` | `npx sylva -m openai/gpt-4o -i 5` | Needs ~5 passes to traverse nested modules |
+| **Large monorepo** (multi-stack) | React + FastAPI + APIs | `npx sylva -m openai/gpt-5.2 -i 25` | Deep traversal of cross-stack dependencies |
+| **Enterprise codebase** (500+ files) | Microservices | `npx sylva -m anthropic/claude-sonnet-4.6 -i 35` | Maximum depth for service-oriented architectures |
+
+**Real-world example:** Analyzing a React/Tailwind frontend + Python/FastAPI backend + Wix API monorepo:
+```bash
+npx sylva --local-repository . -m openai/gpt-5.2 -i 25
+```
+
+For detailed guidance, see the [Choosing the Right Model](https://achatt89.github.io/sylva/models/choosing.html) and [Iteration Depth Guide](https://achatt89.github.io/sylva/models/iterations.html) docs.
 
 ### Environment Overrides
 - `AUTOSKILL_MODEL`: Set this to `gemini` or `anthropic` or `openai` to change the default execution provider globally without providing `-m` on every execution.
