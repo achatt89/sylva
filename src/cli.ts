@@ -162,6 +162,8 @@ async function main() {
           console.log(`Cleaning up temporary repository dir: ${targetDir}`);
           fs.rmSync(targetDir, { recursive: true, force: true });
         }
+
+        process.exit(0);
       } catch (err: any) {
         console.error(`\n❌ Error occurred: ${err.message}`);
         process.exit(1);
