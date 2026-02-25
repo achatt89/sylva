@@ -5,15 +5,38 @@ export const CODEBASE_ANALYSIS_SIGNATURE = f()
   .output(
     "projectOverview",
     f.string(
-      "Project Overview & Context: Gives the AI a fundamental understanding of what the software does"
+      "Project Overview & Context: Exhaustively describe all primary sub-services, their purpose, and what languages or frameworks power them."
     )
   )
   .output("agentPersona", f.string("Agent Persona / Role"))
-  .output("techStack", f.string("Tech Stack & Versions"))
-  .output("directoryStructure", f.string("Directory Structure (The Map)"))
-  .output("executionCommands", f.string("Execution Commands"))
-  .output("codeStyleAndFormatting", f.string("Code Style & Formatting"))
-  .output("architectureAndDesignPatterns", f.string("Architecture & Design Patterns"))
+  .output(
+    "techStack",
+    f.string(
+      "Tech Stack & Versions: List EVERY distinct language, library, database, and external API dependency used. WARNING: Do NOT guess frameworks based on assumptions or the presence of a package.json. You must explicitly scan the actual code files (e.g. imports in .py, .ts, .js) and dependency manifests (e.g. requirements.txt, go.mod) to determine the EXACT tech stack."
+    )
+  )
+  .output(
+    "directoryStructure",
+    f.string(
+      "Directory Structure (The Map): Deeply map out all root folders, separating different sub-projects (frontend vs backend) and their specific structures."
+    )
+  )
+  .output(
+    "executionCommands",
+    f.string("Execution Commands: Exact terminal commands to run or build.")
+  )
+  .output(
+    "codeStyleAndFormatting",
+    f.string(
+      "Code Style & Formatting: Language-specific formatting and strictly enforced linting rules."
+    )
+  )
+  .output(
+    "architectureAndDesignPatterns",
+    f.string(
+      "Architecture & Design Patterns: Detailed cross-service logical flow, API boundaries, and system design logic."
+    )
+  )
   .output("antiPatternsAndRestrictions", f.string("Anti-Patterns & Restrictions"))
   .output("dependencyManagement", f.string("Dependency Management"))
   .output("stateManagementGuidelines", f.string("State Management Guidelines"))
@@ -24,13 +47,16 @@ export const CODEBASE_ANALYSIS_SIGNATURE = f()
   .output("gitAndVersionControl", f.string("Git & Version Control"))
   .output("documentationStandards", f.string("Documentation Standards"))
   .output("agentWorkflow", f.string("Agent Workflow / SOP"))
-  .output("fewShotExamples", f.string("Few-Shot Examples"))
+  .output(
+    "fewShotExamples",
+    f.string("Few-Shot Examples: Specific code snippets showing 'how to do X correctly'.")
+  )
   .build();
 
 export const CODEBASE_ANALYZER_IDENTITY = {
   name: "CodebaseAnalyzer",
   description:
-    "Analyze the structural backbone, data flow, and day-to-day coding conventions of the application using recursive analysis of the source code.",
+    "A hyper-detailed technical architect generating strict developer manifests. You must analyze the structural backbone, data flow, and day-to-day coding conventions of the application using recursive analysis of the source code. NEVER hallucinate frameworks; always verify by scanning actual source imports and dependency files.",
 };
 
 export const COMPILE_CONVENTIONS_SIGNATURE = f()
@@ -69,23 +95,25 @@ export const EXTRACT_AGENTS_SECTIONS_SIGNATURE = f()
   .output(
     "projectOverview",
     f.string(
-      "Brief description of the project: what it does, its tech stack, primary language, and purpose. 2-4 sentences."
+      "Comprehensive description of the project: what it does, its tech stack, its primary languages, and its overall purpose and functionality."
     )
   )
   .output(
     "techStack",
-    f.string("Explicit list of supported languages, frameworks, and tools used in the repository.")
+    f.string(
+      "Explicit and exhaustive list of supported languages, frameworks, UI libraries, backend runtimes, and tools used in the repository. Annotate what each technology is used for (e.g., 'X Framework for UI', 'Y Language for REST Services')."
+    )
   )
   .output(
     "architecture",
     f.string(
-      "High-level map of where things live: directory layout, key modules, entry points, and their responsibilities. Use bullet points with file paths."
+      "Deep mapping of where things live: directory layout, key modules, entry points, and their responsibilities. You MUST generate an ASCII diagram showing the architecture, module relationships, and sub-services. Break down complex monorepos explicitly (e.g., separating frontend code vs backend code)."
     )
   )
   .output(
     "codeStyle",
     f.string(
-      "Specific coding standards observed: language version, formatting, naming conventions, import ordering, type-hinting rules, preferred patterns vs anti-patterns. Use concrete examples from the codebase. All code blocks must be properly opened AND closed with triple backticks."
+      "Granular coding standards observed: language version, formatting, naming conventions, import ordering, type-hinting rules, preferred patterns vs anti-patterns. Explicitly mention how different stacks in a monorepo communicate (e.g., REST, GraphQL, etc.) and how proprietary or 3rd-party external APIs are wrapped or invoked. Provide concrete examples from the codebase. All code blocks must be properly opened AND closed with triple backticks."
     )
   )
   .output(
@@ -95,7 +123,7 @@ export const EXTRACT_AGENTS_SECTIONS_SIGNATURE = f()
   .output(
     "databaseAndState",
     f.string(
-      "Guidelines on how data and state should flow through the application, including databases or state managers."
+      "Guidelines on how data and state should flow through the application, including databases, external API data syncing, or state managers."
     )
   )
   .output(
@@ -151,7 +179,7 @@ export const EXTRACT_AGENTS_SECTIONS_SIGNATURE = f()
   .output(
     "fewShotExamples",
     f.string(
-      "Concrete 'Good' vs 'Bad' code snippets to perfectly align the agent via demonstration. All code blocks must be properly opened AND closed with triple backticks."
+      "Concrete 'Good' vs 'Bad' code snippets to perfectly align the agent via demonstration. Provide detailed examples of standard implementation paths. All code blocks must be properly opened AND closed with triple backticks."
     )
   )
   .build();

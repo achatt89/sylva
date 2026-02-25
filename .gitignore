@@ -1,2 +1,7 @@
-node_modules/\ndist/\n.env\n.claude/
-\nnode_modules/
+node_modules
+dist
+.env
+.claude
+node_modules
+*.tgz
+*.tar.gz

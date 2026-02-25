@@ -1,69 +1,9 @@
 import * as fs from "fs";
 import * as path from "path";
 import { execSync } from "child_process";
+import { ALLOWED_EXTENSIONS, IGNORED_DIRS, DEPENDENCY_MANIFESTS } from "./constants";
 
 export type TreeType = string | { [key: string]: TreeType };
-
-const ALLOWED_EXTENSIONS = new Set([
-  ".py",
-  ".js",
-  ".ts",
-  ".jsx",
-  ".tsx",
-  ".vue",
-  ".java",
-  ".md",
-  ".json",
-  ".yml",
-  ".yaml",
-  ".txt",
-  ".html",
-  ".css",
-  ".scss",
-  ".less",
-  ".c",
-  ".cpp",
-  ".h",
-  ".hpp",
-  ".cs",
-  ".go",
-  ".rb",
-  ".php",
-  ".rs",
-  ".sh",
-  ".swift",
-  ".kt",
-  ".sql",
-  ".xml",
-  ".toml",
-  ".ini",
-  ".dart",
-  ".scala",
-  ".r",
-  ".m",
-  ".pl",
-]);
-
-const IGNORED_DIRS = new Set([
-  "node_modules",
-  "__pycache__",
-  "venv",
-  "env",
-  "dist",
-  "build",
-  "target",
-  "vendor",
-  "bin",
-  "obj",
-  "out",
-  "coverage",
-  "logs",
-  "tmp",
-  "temp",
-  "packages",
-  "pkg",
-  ".git",
-]);
 
 /**
  * Recursively load the source tree into a nested dictionary,
@@ -118,7 +58,18 @@ export function loadSourceTree(rootDir: string): { [key: string]: TreeType } {
     }
   }
 
-  return tree;
+  // Hoist dependency manifests to the top of the tree so the AI reads them first
+  const hoisted: { [key: string]: TreeType } = {};
+  const rest: { [key: string]: TreeType } = {};
+  for (const [key, value] of Object.entries(tree)) {
+    if (DEPENDENCY_MANIFESTS.has(key)) {
+      hoisted[key] = value;
+    } else {
+      rest[key] = value;
+    }
+  }
+
+  return { ...hoisted, ...rest };
 }
 
 /**

@@ -64,7 +64,13 @@ export async function resolveRepositoryTarget(args: any): Promise<{
   }
 }
 
-async function runPipeline(repoDir: string, repoName: string, llmMini: any, maxIterations: number) {
+async function runPipeline(
+  repoDir: string,
+  repoName: string,
+  llmPrimary: any,
+  llmMini: any,
+  maxIterations: number
+) {
   console.log(`\n======================================================`);
   console.log(`🕵️‍♂️    SYLVA / AGENTS.md Generator Pipeline`);
   console.log(`======================================================\n`);
@@ -83,13 +89,16 @@ async function runPipeline(repoDir: string, repoName: string, llmMini: any, maxI
   const extractor = new CodebaseConventionExtractor(maxIterations);
   const extractResult = await extractor.extract(sourceTree);
 
+  // Use the PRIMARY model for RLM analysis (needs strong reasoning to avoid hallucination)
   console.log(`=> Running the Codebase Analyzer RLM workflow...`);
-  const rlmResult = await extractResult.analyzer.forward(llmMini, {
+  const rlmResult = await extractResult.analyzer.forward(llmPrimary, {
     sourceContext: extractResult.contextString,
   });
 
-  const conventionsMarkdown = await extractor.compileMarkdown(llmMini, rlmResult);
+  // Use the PRIMARY model for compiling conventions (needs to accurately synthesize)
+  const conventionsMarkdown = await extractor.compileMarkdown(llmPrimary, rlmResult);
 
+  // Use MINI model for section extraction (cheaper, deterministic task)
   const creator = new AgentsMdCreator();
   const sections = await creator.extractAndCompileSections(llmMini, conventionsMarkdown, repoName);
   const finalAgentsMd = compileAgentsMd(sections, repoName);
@@ -134,8 +143,9 @@ async function main() {
         const { repoUrl, localPath, repoName } = await resolveRepositoryTarget(parsedArgs);
         const modelConfig = resolveModelConfig(parsedArgs.model);
         console.log(
-          `Using provider: ${modelConfig.provider} | Model mini: ${modelConfig.model_mini}`
+          `Using provider: ${modelConfig.provider} | Primary: ${modelConfig.model} | Mini: ${modelConfig.model_mini}`
         );
+        const llmPrimary = getLanguageModelService(modelConfig, false);
         const llmMini = getLanguageModelService(modelConfig, true);
         let targetDir = localPath;
 
@@ -146,7 +156,7 @@ async function main() {
 
         if (!targetDir) throw new Error("Could not resolve target directory");
 
-        await runPipeline(targetDir, repoName, llmMini, parsedArgs.maxIterations);
+        await runPipeline(targetDir, repoName, llmPrimary, llmMini, parsedArgs.maxIterations);
 
         if (repoUrl && targetDir) {
           console.log(`Cleaning up temporary repository dir: ${targetDir}`);
