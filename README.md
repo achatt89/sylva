@@ -30,17 +30,32 @@ npm run build
 
 ### Execution
 
-To run Sylva, pass a Github repository or local filepath to analyze:
+The project is published to the NPM registry and can be executed natively anywhere!
+
+**Option 1: Run seamlessly without installing**
 ```bash
-npm start -- https://github.com/expressjs/express
+# Analyze the current working directory natively
+npx sylva
+
+# Provide a specific GitHub repo
+npx sylva --github-repository https://github.com/expressjs/express
 ```
 
-Alternatively, you can manually trigger options using explicit flags:
+**Option 2: Install globally on your system**
 ```bash
-npm start -- --github-repository https://github.com/expressjs/express -m openai/gpt-4o
+npm install -g sylva
+
+# Once installed globally, you can execute it anywhere!
+sylva
+sylva --help
 ```
 
-**Positional Default Search:**
+Alternatively, if running from source:
+```bash
+npm start -- --github-repository https://github.com/expressjs/express -m openai/gpt-5.3
+```
+
+**Positional Default Search (from source):**
 ```bash
 npm start -- ./my-local-codebase
 ```
@@ -60,3 +75,17 @@ Execute tests by running:
 ```bash
 npm test
 ```
+
+## Contributing
+
+We strictly follow a feature-branch workflow. Please ensure your contributions maintain high code quality and test coverage.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`) - *Our Husky pre-commit hooks will automatically lint and test your code.*
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## Issues, Bugs, and Feature Requests
+
+Please report all issues and feature requests using our [GitHub Issues](https://github.com/achatt89/sylva/issues) tracker. When reporting bugs, please provide a minimally reproducible example along with the console output (if applicable).

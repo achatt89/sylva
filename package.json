@@ -1,8 +1,14 @@
 {
   "name": "sylva",
   "version": "1.0.0",
-  "description": "",
+  "description": "Auto-generate AGENTS.md for your repository using Ax-LLM. Analyze the structural backbone, data flow, and day-to-day coding conventions natively.",
   "main": "dist/index.js",
+  "bin": {
+    "sylva": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "start": "ts-node src/cli.ts",
     "build": "tsc",
@@ -17,9 +23,18 @@
     "type": "git",
     "url": "git+https://github.com/achatt89/sylva.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "agents",
+    "llm",
+    "documentation",
+    "cli",
+    "automation",
+    "ai",
+    "typescript",
+    "ax-llm"
+  ],
+  "author": "Abhijit Chatterjee",
+  "license": "MIT",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/achatt89/sylva/issues"
