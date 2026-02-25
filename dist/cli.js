@@ -45,13 +45,13 @@ const utils_1 = require("./utils");
 const modules_1 = require("./modules");
 dotenv.config();
 function initEnvironment() {
-    dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+    dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 }
 async function resolveRepositoryTarget(args) {
     let githubRepo = args.githubRepository;
     let localRepo = args.localRepository;
     if (!githubRepo && !localRepo && args.repo) {
-        if (args.repo.startsWith('http') || args.repo.startsWith('git@')) {
+        if (args.repo.startsWith("http") || args.repo.startsWith("git@")) {
             githubRepo = args.repo;
         }
         else {
@@ -64,7 +64,10 @@ async function resolveRepositoryTarget(args) {
             githubRepo = githubEnv;
         }
         else {
-            const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+            const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout,
+            });
             const answer = await rl.question("Enter absolute path to local repository (or press Enter for current directory): ");
             rl.close();
             localRepo = answer.trim() ? answer.trim() : process.cwd();
@@ -72,8 +75,8 @@ async function resolveRepositoryTarget(args) {
     }
     if (githubRepo) {
         const repoUrl = githubRepo.trim();
-        let repoName = repoUrl.replace(/\/$/, '').split('/').pop() || 'unknown-repo';
-        if (repoName.endsWith('.git'))
+        let repoName = repoUrl.replace(/\/$/, "").split("/").pop() || "unknown-repo";
+        if (repoName.endsWith(".git"))
             repoName = repoName.slice(0, -4);
         return { repoUrl, localPath: null, repoName };
     }
@@ -100,7 +103,9 @@ async function runPipeline(repoDir, repoName, llmMini, maxIterations) {
     const extractor = new modules_1.CodebaseConventionExtractor(maxIterations);
     const extractResult = await extractor.extract(sourceTree);
     console.log(`=> Running the Codebase Analyzer RLM workflow...`);
-    const rlmResult = await extractResult.analyzer.forward(llmMini, { sourceContext: extractResult.contextString });
+    const rlmResult = await extractResult.analyzer.forward(llmMini, {
+        sourceContext: extractResult.contextString,
+    });
     const conventionsMarkdown = await extractor.compileMarkdown(llmMini, rlmResult);
     const creator = new modules_1.AgentsMdCreator();
     const sections = await creator.extractAndCompileSections(llmMini, conventionsMarkdown, repoName);
@@ -114,15 +119,15 @@ async function main() {
     initEnvironment();
     const program = new commander_1.Command();
     program
-        .name('sylva')
-        .description('Auto-generate AGENTS.md for your repository using Ax-LLM')
-        .version('1.0.0')
-        .argument('[repo]', 'Absolute path to a local repository to analyze (default)')
-        .option('--github-repository <url>', 'Public GitHub repository URL to analyze')
-        .option('--local-repository <path>', 'Absolute path to a local repository to analyze')
-        .option('-m, --model <model>', 'The LLM model to use (PROVIDER/MODEL)')
-        .option('--list-models', 'List all supported models and exit')
-        .option('-i, --max-iterations <number>', 'Max RLM iterations', '35')
+        .name("sylva")
+        .description("Auto-generate AGENTS.md for your repository using Ax-LLM")
+        .version("1.0.0")
+        .argument("[repo]", "Absolute path to a local repository to analyze (default)")
+        .option("--github-repository <url>", "Public GitHub repository URL to analyze")
+        .option("--local-repository <path>", "Absolute path to a local repository to analyze")
+        .option("-m, --model <model>", "The LLM model to use (PROVIDER/MODEL)")
+        .option("--list-models", "List all supported models and exit")
+        .option("-i, --max-iterations <number>", "Max RLM iterations", "35")
         .action(async (repo, options) => {
         if (options.listModels) {
             console.log((0, modelConfig_1.listSupportedModels)());
@@ -133,7 +138,7 @@ async function main() {
             githubRepository: options.githubRepository,
             localRepository: options.localRepository,
             model: options.model,
-            maxIterations: parseInt(options.maxIterations, 10)
+            maxIterations: parseInt(options.maxIterations, 10),
         };
         try {
             const { repoUrl, localPath, repoName } = await resolveRepositoryTarget(parsedArgs);

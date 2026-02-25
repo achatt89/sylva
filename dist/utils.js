@@ -41,16 +41,63 @@ const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const child_process_1 = require("child_process");
 const ALLOWED_EXTENSIONS = new Set([
-    '.py', '.js', '.ts', '.jsx', '.tsx', '.vue', '.java', '.md',
-    '.json', '.yml', '.yaml', '.txt', '.html', '.css', '.scss', '.less',
-    '.c', '.cpp', '.h', '.hpp', '.cs', '.go', '.rb', '.php',
-    '.rs', '.sh', '.swift', '.kt', '.sql', '.xml', '.toml', '.ini',
-    '.dart', '.scala', '.r', '.m', '.pl'
+    ".py",
+    ".js",
+    ".ts",
+    ".jsx",
+    ".tsx",
+    ".vue",
+    ".java",
+    ".md",
+    ".json",
+    ".yml",
+    ".yaml",
+    ".txt",
+    ".html",
+    ".css",
+    ".scss",
+    ".less",
+    ".c",
+    ".cpp",
+    ".h",
+    ".hpp",
+    ".cs",
+    ".go",
+    ".rb",
+    ".php",
+    ".rs",
+    ".sh",
+    ".swift",
+    ".kt",
+    ".sql",
+    ".xml",
+    ".toml",
+    ".ini",
+    ".dart",
+    ".scala",
+    ".r",
+    ".m",
+    ".pl",
 ]);
 const IGNORED_DIRS = new Set([
-    'node_modules', '__pycache__', 'venv', 'env', 'dist', 'build',
-    'target', 'vendor', 'bin', 'obj', 'out', 'coverage', 'logs',
-    'tmp', 'temp', 'packages', 'pkg', '.git'
+    "node_modules",
+    "__pycache__",
+    "venv",
+    "env",
+    "dist",
+    "build",
+    "target",
+    "vendor",
+    "bin",
+    "obj",
+    "out",
+    "coverage",
+    "logs",
+    "tmp",
+    "temp",
+    "packages",
+    "pkg",
+    ".git",
 ]);
 /**
  * Recursively load the source tree into a nested dictionary,
@@ -62,7 +109,7 @@ function loadSourceTree(rootDir) {
         return tree;
     const entries = fs.readdirSync(rootDir);
     for (const entry of entries) {
-        if (IGNORED_DIRS.has(entry) || entry === '.git' || entry === '.DS_Store') {
+        if (IGNORED_DIRS.has(entry) || entry === ".git" || entry === ".DS_Store") {
             continue;
         }
         const fullPath = path.join(rootDir, entry);
@@ -75,7 +122,7 @@ function loadSourceTree(rootDir) {
             continue;
         }
         if (stat.isDirectory()) {
-            if (!entry.startsWith('.')) {
+            if (!entry.startsWith(".")) {
                 const subTree = loadSourceTree(fullPath);
                 if (Object.keys(subTree).length > 0) {
                     tree[entry] = subTree;
@@ -85,10 +132,12 @@ function loadSourceTree(rootDir) {
         else {
             const ext = path.extname(entry).toLowerCase();
             // Allow specific files even without standard extension
-            if (!ALLOWED_EXTENSIONS.has(ext) && entry !== 'Dockerfile' && entry !== 'Makefile')
+            if (!ALLOWED_EXTENSIONS.has(ext) &&
+                entry !== "Dockerfile" &&
+                entry !== "Makefile")
                 continue;
             try {
-                const content = fs.readFileSync(fullPath, 'utf-8');
+                const content = fs.readFileSync(fullPath, "utf-8");
                 if (content.length < 500000) {
                     tree[entry] = content;
                 }
@@ -109,13 +158,13 @@ function loadSourceTree(rootDir) {
 function cloneRepo(repoUrl, destDir) {
     console.log(`Cloning ${repoUrl} into ${destDir}...`);
     try {
-        (0, child_process_1.execSync)(`git clone --depth 1 ${repoUrl} ${destDir}`, { stdio: 'pipe' });
+        (0, child_process_1.execSync)(`git clone --depth 1 ${repoUrl} ${destDir}`, { stdio: "pipe" });
     }
     catch (error) {
         console.error(`Failed to clone repository: ${error.message}`);
         if (error.stderr)
             console.error(error.stderr.toString());
-        throw new Error('Git clone failed');
+        throw new Error("Git clone failed");
     }
 }
 /**
@@ -127,12 +176,12 @@ function saveAgentsToDisk(repoName, agentsContent, baseDir = "projects") {
     cleanContent = cleanContent.replace(/^```(?:markdown)?\s*\n/, "");
     cleanContent = cleanContent.replace(/```\s*$/, "");
     cleanContent = cleanContent.trim();
-    const folderName = repoName.toLowerCase().replace(/\s+/g, '-');
+    const folderName = repoName.toLowerCase().replace(/\s+/g, "-");
     const targetDir = path.join(baseDir, folderName);
     fs.mkdirSync(targetDir, { recursive: true });
     const filePath = path.join(targetDir, "AGENTS.md");
     try {
-        fs.writeFileSync(filePath, cleanContent, 'utf-8');
+        fs.writeFileSync(filePath, cleanContent, "utf-8");
         console.log(`✅ Successfully saved AGENTS.md to: ${filePath}`);
     }
     catch (error) {
@@ -156,7 +205,7 @@ const AGENTS_SECTION_HEADINGS = [
     ["documentationStandards", "Documentation Standards"],
     ["commonPatterns", "Common Patterns"],
     ["agentWorkflow", "Agent Workflow / SOP"],
-    ["fewShotExamples", "Few-Shot Examples"]
+    ["fewShotExamples", "Few-Shot Examples"],
 ];
 /**
  * Joins evaluated section variables together into the uniform AGENTS.md map.
@@ -165,9 +214,9 @@ function compileAgentsMd(sections, repoName) {
     const parts = [`# AGENTS.md — ${repoName}\n`];
     for (const [key, heading] of AGENTS_SECTION_HEADINGS) {
         const content = sections[key];
-        if (content && content.trim() !== '') {
+        if (content && content.trim() !== "") {
             parts.push(`## ${heading}\n\n${content.trim()}\n`);
         }
     }
-    return parts.join('\n');
+    return parts.join("\n");
 }

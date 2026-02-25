@@ -1,1 +1,1 @@
-console.log('Sylva initialized');
+console.log("Sylva initialized");

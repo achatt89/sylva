@@ -1,4 +1,4 @@
-import { AgentsMdSections, TreeType } from './utils';
+import { AgentsMdSections, TreeType } from "./utils";
 export declare class CodebaseConventionExtractor {
     private maxIterations;
     constructor(maxIterations?: number);

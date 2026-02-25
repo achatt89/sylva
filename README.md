@@ -1,6 +1,6 @@
 # Sylva 🌲
 
-Sylva is an automated AI tool to auto-generate comprehensive `AGENTS.md` and `CODEBASE_CONVENTIONS.md` documentation by reading your entire repository recursively using **Ax-LLM**. This project is a TypeScript port of the Python `GenerateAgents.md` tool.
+Sylva is an automated AI tool to auto-generate comprehensive `AGENTS.md` and `CODEBASE_CONVENTIONS.md` documentation by reading your entire repository recursively using **Ax-LLM**.
 
 It extracts the folder structures, code conventions, state management patterns, and specific architecture styles embedded in your code directly into a format that future AI Coding Assistants (or human engineers) can perfectly follow.
 

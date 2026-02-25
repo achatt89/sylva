@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { resolveModelConfig, listSupportedModels, PROVIDER_GEMINI, PROVIDER_OPENAI, PROVIDER_ANTHROPIC } from '../../src/modelConfig';
+import { resolveModelConfig, listSupportedModels } from '../../src/modelConfig';
+import { PROVIDER_GEMINI, PROVIDER_OPENAI, PROVIDER_ANTHROPIC } from '../../src/constants';
 
 describe('modelConfig', () => {
 
@@ -13,8 +14,8 @@ describe('modelConfig', () => {
             const config = resolveModelConfig();
 
             expect(config.provider).toBe(PROVIDER_GEMINI);
-            expect(config.model).toBe("gemini/gemini-2.5-pro");
-            expect(config.model_mini).toBe("gemini/gemini-2.5-flash");
+            expect(config.model).toBe("gemini/gemini-3.1-pro");
+            expect(config.model_mini).toBe("gemini/gemini-3.1-flash");
             expect(config.api_key).toBe("test_key");
 
             if (originalEnv) process.env.AUTOSKILL_MODEL = originalEnv;
@@ -25,7 +26,7 @@ describe('modelConfig', () => {
             const config = resolveModelConfig("openai");
 
             expect(config.provider).toBe(PROVIDER_OPENAI);
-            expect(config.model).toBe("openai/gpt-5.2");
+            expect(config.model).toBe("openai/gpt-5.3");
         });
 
         it('resolves a specific model string when provided', () => {
@@ -44,7 +45,7 @@ describe('modelConfig', () => {
     describe('listSupportedModels', () => {
         it('returns a formatted string of supported catalogs', () => {
             const output = listSupportedModels();
-            expect(output).toContain('gemini/gemini-2.5-pro');
+            expect(output).toContain('gemini/gemini-3.1-pro');
             expect(output).toContain('(default mini)');
             expect(output).toContain('ANTHROPIC');
         });

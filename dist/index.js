@@ -1,2 +1,2 @@
 "use strict";
-console.log('Sylva initialized');
+console.log("Sylva initialized");
