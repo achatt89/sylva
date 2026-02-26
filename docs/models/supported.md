@@ -53,7 +53,7 @@ The mini model is always the default mini for that provider. You cannot currentl
 
 ```bash
 # See all available models
-npx sylva --list-models
+npx @thelogicatelier/sylva --list-models
 ```
 
 ## API Key Requirements

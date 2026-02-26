@@ -37,15 +37,15 @@ The project is published to the NPM registry and can be executed natively anywhe
 **Option 1: Run seamlessly without installing**
 ```bash
 # Analyze the current working directory natively
-npx sylva
+npx @thelogicatelier/sylva
 
 # Provide a specific GitHub repo
-npx sylva --github-repository https://github.com/expressjs/express
+npx @thelogicatelier/sylva --github-repository https://github.com/expressjs/express
 ```
 
 **Option 2: Install globally on your system**
 ```bash
-npm install -g sylva
+npm install -g @thelogicatelier/sylva
 
 # Once installed globally, you can execute it anywhere!
 sylva
@@ -59,7 +59,7 @@ npm start -- --github-repository https://github.com/expressjs/express -m openai/
 
 **List Supported Models:**
 ```bash
-npx sylva --list-models
+npx @thelogicatelier/sylva --list-models
 ```
 
 ### Advanced Usage: Tuning for Your Project
@@ -68,14 +68,14 @@ The iteration count (`-i`) and model choice (`-m`) dramatically affect output ac
 
 | Project Type | Example | Command | Rationale |
 |---|---|---|---|
-| **Small library** (<20 files) | `pallets/click` | `npx sylva -m openai/gpt-4o -i 1` | Entire codebase fits in one context pass |
-| **Medium app** (20-100 files) | `expressjs/express` | `npx sylva -m openai/gpt-4o -i 5` | Needs ~5 passes to traverse nested modules |
-| **Large monorepo** (multi-stack) | React + FastAPI + APIs | `npx sylva -m openai/gpt-5.2 -i 25` | Deep traversal of cross-stack dependencies |
-| **Enterprise codebase** (500+ files) | Microservices | `npx sylva -m anthropic/claude-sonnet-4.6 -i 35` | Maximum depth for service-oriented architectures |
+| **Small library** (<20 files) | `pallets/click` | `npx @thelogicatelier/sylva -m openai/gpt-4o -i 1` | Entire codebase fits in one context pass |
+| **Medium app** (20-100 files) | `expressjs/express` | `npx @thelogicatelier/sylva -m openai/gpt-4o -i 5` | Needs ~5 passes to traverse nested modules |
+| **Large monorepo** (multi-stack) | React + FastAPI + APIs | `npx @thelogicatelier/sylva -m openai/gpt-5.2 -i 25` | Deep traversal of cross-stack dependencies |
+| **Enterprise codebase** (500+ files) | Microservices | `npx @thelogicatelier/sylva -m anthropic/claude-sonnet-4.6 -i 35` | Maximum depth for service-oriented architectures |
 
 **Real-world example:** Analyzing a React/Tailwind frontend + Python/FastAPI backend + Wix API monorepo:
 ```bash
-npx sylva --local-repository . -m openai/gpt-5.2 -i 25
+npx @thelogicatelier/sylva --local-repository . -m openai/gpt-5.2 -i 25
 ```
 
 For detailed guidance, see the [Choosing the Right Model](https://achatt89.github.io/sylva/models/choosing.html) and [Iteration Depth Guide](https://achatt89.github.io/sylva/models/iterations.html) docs.

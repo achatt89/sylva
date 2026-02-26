@@ -12,7 +12,7 @@ Monorepos — repositories containing multiple sub-projects (e.g., frontend + ba
 ## Recommended Configuration
 
 ```bash
-npx sylva --local-repository . -m openai/gpt-5.2 -i 25
+npx @thelogicatelier/sylva --local-repository . -m openai/gpt-5.2 -i 25
 ```
 
 **Why `gpt-5.2`?** It has stronger reasoning capabilities than `gpt-4o` and handles cross-stack detection better. For maximum accuracy, use `anthropic/claude-sonnet-4.6`.
@@ -36,7 +36,7 @@ Sylva automatically hoists dependency manifests (`requirements.txt`, `package.js
 **Project: `myshabeauty`** — A React/Tailwind frontend with Python FastAPI backend, Wix API + Instagram Graph API integrations, and Fly.io deployment.
 
 ```bash
-npx sylva --local-repository /path/to/myshabeauty -m openai/gpt-5.2 -i 25
+npx @thelogicatelier/sylva --local-repository /path/to/myshabeauty -m openai/gpt-5.2 -i 25
 ```
 
 This correctly identified:

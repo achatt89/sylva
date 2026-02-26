@@ -16,10 +16,10 @@ Modern AI coding tools (Cursor, Claude Code, Copilot, Antigravity) perform drama
 
 ```bash
 # Run instantly on any local repository
-npx sylva --local-repository /path/to/your/project -m openai/gpt-4o -i 5
+npx @thelogicatelier/sylva --local-repository /path/to/your/project -m openai/gpt-4o -i 5
 
 # Or analyze a GitHub repository directly
-npx sylva --github-repository https://github.com/expressjs/express
+npx @thelogicatelier/sylva --github-repository https://github.com/expressjs/express
 ```
 
 ## What You'll Find Here

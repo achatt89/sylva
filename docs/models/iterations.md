@@ -75,14 +75,14 @@ Iteration 7: Read Dockerfile → confirms deployment strategy
 
 ```bash
 # Small Python library
-npx sylva --local-repository ./my-click-plugin -m openai/gpt-4o -i 1
+npx @thelogicatelier/sylva --local-repository ./my-click-plugin -m openai/gpt-4o -i 1
 
 # Standard React app
-npx sylva --local-repository ./my-react-app -m openai/gpt-4o -i 5
+npx @thelogicatelier/sylva --local-repository ./my-react-app -m openai/gpt-4o -i 5
 
 # Full-stack monorepo (React + FastAPI + Docker)
-npx sylva --local-repository ./my-fullstack-app -m openai/gpt-5.2 -i 25
+npx @thelogicatelier/sylva --local-repository ./my-fullstack-app -m openai/gpt-5.2 -i 25
 
 # Enterprise microservices
-npx sylva --local-repository ./enterprise -m anthropic/claude-sonnet-4.6 -i 35
+npx @thelogicatelier/sylva --local-repository ./enterprise -m anthropic/claude-sonnet-4.6 -i 35
 ```

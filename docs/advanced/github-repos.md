@@ -5,7 +5,7 @@ Sylva can analyze remote GitHub repositories directly without manual cloning.
 ## Basic Usage
 
 ```bash
-npx sylva --github-repository https://github.com/pallets/flask -m openai/gpt-4o -i 5
+npx @thelogicatelier/sylva --github-repository https://github.com/pallets/flask -m openai/gpt-4o -i 5
 ```
 
 ## What Happens Under the Hood
@@ -37,7 +37,7 @@ Sylva uses `git clone` under the hood, so it respects your Git credentials:
 
 ```bash
 # Private repo via SSH
-npx sylva --github-repository git@github.com:my-org/private-repo.git -m openai/gpt-4o
+npx @thelogicatelier/sylva --github-repository git@github.com:my-org/private-repo.git -m openai/gpt-4o
 ```
 
 ## Environment Variable Shortcut
@@ -50,7 +50,7 @@ GITHUB_REPO_URL=https://github.com/my-org/my-repo
 
 Then simply:
 ```bash
-npx sylva -m openai/gpt-4o -i 5
+npx @thelogicatelier/sylva -m openai/gpt-4o -i 5
 ```
 
 ## Limitations

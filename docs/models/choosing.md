@@ -19,7 +19,7 @@ Choosing the right model and iteration count is the single biggest factor affect
 For projects with fewer than 20 files, the entire source tree fits comfortably in a single LLM context window. One iteration is enough because the AI can see everything at once.
 
 ```bash
-npx sylva --github-repository https://github.com/pallets/click -m openai/gpt-4o -i 1
+npx @thelogicatelier/sylva --github-repository https://github.com/pallets/click -m openai/gpt-4o -i 1
 ```
 
 ### Medium Applications (`-i 5`)
@@ -27,7 +27,7 @@ npx sylva --github-repository https://github.com/pallets/click -m openai/gpt-4o 
 At 20-100 files, the RLM agent needs a few passes to traverse nested directories and cross-reference imports with dependency files. Five iterations lets it scan the top-level structure, then drill into 3-4 key subdirectories.
 
 ```bash
-npx sylva --local-repository ./my-express-app -m openai/gpt-4o -i 5
+npx @thelogicatelier/sylva --local-repository ./my-express-app -m openai/gpt-4o -i 5
 ```
 
 ### Large Monorepos (`-i 25`)
@@ -39,7 +39,7 @@ This is where model choice matters most. Multi-stack repos (e.g., React frontend
 **Real-world example: `myshabeauty`** — a React/Tailwind frontend with a Python FastAPI backend, Wix API integration, and Fly.io deployment:
 
 ```bash
-npx sylva --local-repository . -m openai/gpt-5.2 -i 25
+npx @thelogicatelier/sylva --local-repository . -m openai/gpt-5.2 -i 25
 ```
 
 This produced a detailed `AGENTS.md` correctly identifying:
@@ -55,7 +55,7 @@ This produced a detailed `AGENTS.md` correctly identifying:
 The default iteration count of 35 is designed for the largest repositories. Use Anthropic's Claude Sonnet for its massive context window and strong instruction-following.
 
 ```bash
-npx sylva --local-repository ./enterprise-monorepo -m anthropic/claude-sonnet-4.6 -i 35
+npx @thelogicatelier/sylva --local-repository ./enterprise-monorepo -m anthropic/claude-sonnet-4.6 -i 35
 ```
 
 ## Model Comparison: When to Use What

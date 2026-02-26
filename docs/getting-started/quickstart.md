@@ -14,7 +14,7 @@ This guide walks you through generating your first `AGENTS.md` file in under 2 m
 cd /path/to/your/project
 
 # Run Sylva (using OpenAI as an example)
-npx sylva --local-repository . -m openai/gpt-4o -i 5
+npx @thelogicatelier/sylva --local-repository . -m openai/gpt-4o -i 5
 ```
 
 ## Step 2: Watch the Pipeline
@@ -74,7 +74,7 @@ AI coding tools will automatically pick up this file and use it to generate more
 You don't need to clone a repo first. Sylva can fetch it directly:
 
 ```bash
-npx sylva --github-repository https://github.com/pallets/flask -m openai/gpt-4o -i 5
+npx @thelogicatelier/sylva --github-repository https://github.com/pallets/flask -m openai/gpt-4o -i 5
 ```
 
 Sylva will shallow-clone the repo into a temp directory, analyze it, save the output, and clean up automatically.

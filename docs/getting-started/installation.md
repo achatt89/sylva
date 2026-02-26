@@ -8,19 +8,19 @@ No installation required. Run against any repository:
 
 ```bash
 # Analyze the current directory
-npx sylva
+npx @thelogicatelier/sylva
 
 # Analyze a specific local path
-npx sylva --local-repository /path/to/your/project
+npx @thelogicatelier/sylva --local-repository /path/to/your/project
 
 # Analyze a GitHub repository
-npx sylva --github-repository https://github.com/expressjs/express
+npx @thelogicatelier/sylva --github-repository https://github.com/expressjs/express
 ```
 
 ## Option 2: Install Globally
 
 ```bash
-npm install -g sylva
+npm install -g @thelogicatelier/sylva
 
 # Now available everywhere
 sylva --help

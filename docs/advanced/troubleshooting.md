@@ -15,7 +15,7 @@ Common issues and their solutions.
 **Fix:** Use an established model:
 ```bash
 # Instead of unreleased models, use:
-npx sylva --local-repository . -m openai/gpt-4o -i 5
+npx @thelogicatelier/sylva --local-repository . -m openai/gpt-4o -i 5
 ```
 
 ### HTTP 429 - Rate Limited
@@ -77,7 +77,7 @@ npx sylva --local-repository . -m openai/gpt-4o -i 5
 
 ### `sylva: command not found`
 
-**Fix:** Use `npx sylva` instead, or ensure the global npm bin directory is in your `PATH`:
+**Fix:** Use `npx @thelogicatelier/sylva` instead, or ensure the global npm bin directory is in your `PATH`:
 ```bash
 export PATH="$(npm config get prefix)/bin:$PATH"
 ```
@@ -90,7 +90,7 @@ export PATH="$(npm config get prefix)/bin:$PATH"
 
 **Fix:** Update to the latest version:
 ```bash
-npm install -g sylva@latest
+npm install -g @thelogicatelier/sylva@latest
 ```
 
 ### Large Files Skipped

@@ -43,13 +43,13 @@ The `-i` or `--max-iterations` flag controls how many times the RLM agent can it
 
 ```bash
 # Default: 35 iterations
-npx sylva --local-repository . -m openai/gpt-4o
+npx @thelogicatelier/sylva --local-repository . -m openai/gpt-4o
 
 # Explicit: 25 iterations (good for large repos)
-npx sylva --local-repository . -m openai/gpt-4o -i 25
+npx @thelogicatelier/sylva --local-repository . -m openai/gpt-4o -i 25
 
 # Minimal: 1 iteration (fast but shallow)
-npx sylva --local-repository . -m openai/gpt-4o -i 1
+npx @thelogicatelier/sylva --local-repository . -m openai/gpt-4o -i 1
 ```
 
 **More iterations = deeper analysis** but also:

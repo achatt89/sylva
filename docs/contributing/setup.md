@@ -86,5 +86,5 @@ cd /path/to/test-project
 npm install /path/to/sylva/sylva-x.x.x.tgz
 
 # Run it
-npx sylva --local-repository . -m openai/gpt-4o -i 5
+npx @thelogicatelier/sylva --local-repository . -m openai/gpt-4o -i 5
 ```

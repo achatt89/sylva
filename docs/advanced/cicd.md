@@ -28,7 +28,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          npx sylva --local-repository . -m openai/gpt-4o -i 5
+          npx @thelogicatelier/sylva --local-repository . -m openai/gpt-4o -i 5
 
       - name: Commit AGENTS.md
         run: |
@@ -69,7 +69,7 @@ generate-agents:
   image: node:22
   stage: docs
   script:
-    - npx sylva --local-repository . -m openai/gpt-4o -i 5
+    - npx @thelogicatelier/sylva --local-repository . -m openai/gpt-4o -i 5
     - cp projects/$(basename $PWD)/AGENTS.md ./AGENTS.md
   artifacts:
     paths:
@@ -90,7 +90,7 @@ pipeline {
     stages {
         stage('Generate AGENTS.md') {
             steps {
-                sh 'npx sylva --local-repository . -m openai/gpt-4o -i 5'
+                sh 'npx @thelogicatelier/sylva --local-repository . -m openai/gpt-4o -i 5'
                 sh "cp projects/\$(basename \$PWD)/AGENTS.md ./AGENTS.md"
             }
         }
