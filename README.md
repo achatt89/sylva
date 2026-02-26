@@ -104,3 +104,7 @@ We strictly follow a feature-branch workflow. Please ensure your contributions m
 ## Issues, Bugs, and Feature Requests
 
 Please report all issues and feature requests using our [GitHub Issues](https://github.com/achatt89/sylva/issues) tracker. When reporting bugs, please provide a minimally reproducible example along with the console output (if applicable).
+
+---
+
+Built by [The Logic Atelier](https://thelogicatelier.com)

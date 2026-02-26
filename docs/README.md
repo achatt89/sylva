@@ -34,3 +34,7 @@ npx sylva --github-repository https://github.com/expressjs/express
 | [Advanced Usage](advanced/monorepo.md) | Monorepos, CI/CD, and troubleshooting |
 | [Architecture](architecture/internals.md) | Internal code architecture for contributors |
 | [Contributing](contributing/setup.md) | Development setup, code quality, and PR guidelines |
+
+---
+
+Built by [The Logic Atelier](https://thelogicatelier.com)

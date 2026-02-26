@@ -1,7 +1,7 @@
 {
     "title": "Sylva Developer Docs",
     "description": "Auto-generate AGENTS.md for your repository using Ax-LLM. Comprehensive developer documentation.",
-    "author": "Sylva",
+    "author": "The Logic Atelier (https://thelogicatelier.com)",
     "language": "en",
     "root": "."
 }
