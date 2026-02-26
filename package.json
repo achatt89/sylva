@@ -1,6 +1,6 @@
 {
   "name": "@thelogicatelier/sylva",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Auto-generate AGENTS.md for your repository using Ax-LLM. Analyze the structural backbone, data flow, and day-to-day coding conventions natively.",
   "main": "dist/index.js",
   "bin": {
