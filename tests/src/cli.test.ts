@@ -37,9 +37,9 @@ describe("cli utilities", () => {
     });
 
     it("resolves a positional repo string as local path if it is not a URL", async () => {
-      const result = await resolveRepositoryTarget({ repo: "./projects" });
-      expect(result.localPath).toBe(path.resolve("./projects"));
-      expect(result.repoName).toBe("projects");
+      const result = await resolveRepositoryTarget({ repo: "./tests" });
+      expect(result.localPath).toBe(path.resolve("./tests"));
+      expect(result.repoName).toBe("tests");
       expect(result.repoUrl).toBeNull();
     });
   });
