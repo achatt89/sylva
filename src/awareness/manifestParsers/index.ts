@@ -105,6 +105,7 @@ export function parseManifest(manifest: ManifestFile): Signal[] {
     // Exact filename matches
     switch (filename) {
       case "openclaw.json":
+      case ".openclaw.json":
         return parseOpenclawJson(manifest);
       case "package.json":
         return parsePackageJson(manifest);

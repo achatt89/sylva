@@ -44,6 +44,7 @@ const MANIFEST_EXACT_NAMES = new Set([
   "yarn.lock",
   "pnpm-lock.yaml",
   "openclaw.json",
+  ".openclaw.json",
   "angular.json",
   "workspace.json",
   "project.json",
