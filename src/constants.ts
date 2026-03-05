@@ -84,6 +84,11 @@ export const ALLOWED_EXTENSIONS = new Set([
   ".r",
   ".m",
   ".pl",
+  ".lock",
+  ".cfg",
+  ".csproj",
+  ".fsproj",
+  ".gradle",
 ]);
 
 export const IGNORED_DIRS = new Set([
@@ -130,4 +135,10 @@ export const DEPENDENCY_MANIFESTS = new Set([
   "docker-compose.yml",
   "docker-compose.yaml",
   "package.json",
+  "openclaw.json",
+  "angular.json",
+  "workspace.json",
+  "global.json",
+  "Cargo.lock",
+  "go.mod",
 ]);

@@ -24,14 +24,23 @@ function serializeSourceTree(tree: { [key: string]: TreeType }, indent = ""): st
 
 export class CodebaseConventionExtractor {
   private maxIterations: number;
+  private awarenessContext?: string;
 
   constructor(maxIterations: number = 35) {
     this.maxIterations = maxIterations;
   }
 
-  public async extract(sourceTree: { [key: string]: TreeType }) {
+  public async extract(sourceTree: { [key: string]: TreeType }, awarenessContext?: string) {
     console.log("=> Preparing and serializing Source Tree for RLM analysis...");
-    const contextString = serializeSourceTree(sourceTree);
+    let contextString = serializeSourceTree(sourceTree);
+
+    // Store awareness context for use in subsequent pipeline steps
+    this.awarenessContext = awarenessContext;
+
+    // Prepend awareness context if available
+    if (awarenessContext) {
+      contextString = `${awarenessContext}\n\n---\n\nSOURCE TREE:\n${contextString}`;
+    }
 
     console.log(
       `=> Running AxAgent (RLM) for Codebase Analysis on ${Object.keys(sourceTree).length} root modules...`
@@ -63,7 +72,13 @@ export class CodebaseConventionExtractor {
     const compileSig = COMPILE_CONVENTIONS_SIGNATURE;
     const compiler = ax(compileSig);
 
-    const finalResult = await compiler.forward(llm, extractResult);
+    // Inject awarenessContext into the compilation step so constraints flow through
+    const inputWithAwareness = {
+      ...extractResult,
+      awarenessContext: this.awarenessContext || "No framework awareness context available.",
+    };
+
+    const finalResult = await compiler.forward(llm, inputWithAwareness);
     return (finalResult as any).markdownDocument;
   }
 }
@@ -72,7 +87,8 @@ export class AgentsMdCreator {
   public async extractAndCompileSections(
     llm: any,
     conventionsMarkdown: string,
-    repositoryName: string
+    repositoryName: string,
+    awarenessContext?: string
   ): Promise<AgentsMdSections> {
     console.log(`=> Extracting individual AGENTS.md sections for repository: ${repositoryName}...`);
 
@@ -83,6 +99,7 @@ export class AgentsMdCreator {
     const sections = await sectionExtractor.forward(llm, {
       conventionsMarkdown,
       repositoryName,
+      awarenessContext: awarenessContext || "No framework awareness context available.",
     });
     return sections as AgentsMdSections;
   }

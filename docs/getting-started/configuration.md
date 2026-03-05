@@ -27,6 +27,9 @@ OPENAI_API_KEY=sk-proj-xxxxxxxxxxxx
 ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxx
 GEMINI_API_KEY=AIzaSyxxxxxxxxxx
 
+# Optional: Web-grounded framework documentation (Framework Awareness)
+# BRAVE_API_KEY=BSAxxxxxxxxxxxx
+
 # Optional: Override default model selection
 AUTOSKILL_MODEL=openai
 

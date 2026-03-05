@@ -26,7 +26,7 @@ export function loadSourceTree(rootDir: string): { [key: string]: TreeType } {
     try {
       stat = fs.statSync(fullPath);
     } catch {
-      console.log(`Failed to parse file: ${fullPath}, skipping.`);
+      console.warn(`⚠️  Cannot read ${fullPath} (permission denied or broken symlink) — skipping.`);
       continue;
     }
 
@@ -48,11 +48,15 @@ export function loadSourceTree(rootDir: string): { [key: string]: TreeType } {
         if (content.length < 500000) {
           tree[entry] = content;
         } else {
-          console.warn(`File ${fullPath} skipped due to being too large (${content.length} chars)`);
+          console.warn(
+            `⚠️  Skipping ${entry}: file is too large (${(content.length / 1000).toFixed(0)}K chars, limit is 500K).\n` +
+              `   Consider adding this file to .gitignore if it's generated.`
+          );
         }
       } catch (error) {
         console.warn(
-          `File ${fullPath} skipped due to read/encoding issues: ${(error as Error).message}`
+          `⚠️  Skipping ${entry}: could not read file — ${(error as Error).message}\n` +
+            `   This may be a binary file or use an unsupported encoding.`
         );
       }
     }
@@ -80,8 +84,13 @@ export function cloneRepo(repoUrl: string, destDir: string): void {
   try {
     execSync(`git clone --depth 1 ${repoUrl} ${destDir}`, { stdio: "pipe" });
   } catch (error: any) {
-    console.error(`Failed to clone repository: ${error.message}`);
-    if (error.stderr) console.error(error.stderr.toString());
+    console.error(
+      `❌ Failed to clone repository: ${error.message}\n` +
+        `   URL: ${repoUrl}\n` +
+        `   Destination: ${destDir}\n` +
+        `   Ensure the URL is correct, the repo is public or you have access, and git is installed.`
+    );
+    if (error.stderr) console.error(`   Git stderr: ${error.stderr.toString().trim()}`);
     throw new Error("Git clone failed", { cause: error });
   }
 }
@@ -110,7 +119,10 @@ export function saveAgentsToDisk(
     fs.writeFileSync(filePath, cleanContent, "utf-8");
     console.log(`✅ Successfully saved AGENTS.md to: ${filePath}`);
   } catch (error: any) {
-    console.error(`Failed to save AGENTS.md to ${filePath}: ${error.message}`);
+    console.error(
+      `❌ Failed to save AGENTS.md to ${filePath}: ${error.message}\n` +
+        `   Check that the output directory exists and you have write permissions.`
+    );
   }
 }
 

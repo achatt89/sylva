@@ -7,6 +7,7 @@
   - [Quick Start](getting-started/quickstart.md)
 - [Core Concepts]
   - [How Sylva Works](concepts/pipeline.md)
+  - [Framework Awareness](concepts/awareness.md)
   - [RLM Agent](concepts/rlm.md)
   - [Source Tree Serialization](concepts/serialization.md)
   - [Prompt Engineering Internals](concepts/prompts.md)

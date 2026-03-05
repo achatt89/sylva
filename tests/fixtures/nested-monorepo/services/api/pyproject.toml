@@ -1,0 +1,16 @@
+[project]
+name = "api-service"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+[project.dependencies]
+fastapi = "0.109.0"
+uvicorn = ">=0.25.0"
+sqlalchemy = "^2.0"
+
+[tool.poetry]
+name = "api-service"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "0.109.0"

@@ -1,0 +1,34 @@
+{
+    "agents": {
+        "defaults": {
+            "model": "gpt-4o",
+            "maxConcurrent": 3,
+            "workspace": "/workspace"
+        }
+    },
+    "tools": {
+        "web.search": {
+            "enabled": true,
+            "provider": "brave",
+            "config": {
+                "apiKeyEnv": "BRAVE_API_KEY"
+            }
+        },
+        "web.fetch": {
+            "enabled": true
+        }
+    },
+    "channels": {
+        "telegram": {
+            "enabled": true,
+            "token_env": "TELEGRAM_BOT_TOKEN"
+        },
+        "whatsapp": {
+            "enabled": false
+        }
+    },
+    "gateway": {
+        "port": 8080,
+        "host": "0.0.0.0"
+    }
+}

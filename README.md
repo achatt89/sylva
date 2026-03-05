@@ -80,9 +80,29 @@ npx @thelogicatelier/sylva --local-repository . -m openai/gpt-5.2 -i 25
 
 For detailed guidance, see the [Choosing the Right Model](https://achatt89.github.io/sylva/models/choosing.html) and [Iteration Depth Guide](https://achatt89.github.io/sylva/models/iterations.html) docs.
 
+### Framework Awareness (NEW)
+
+Sylva now includes **deterministic framework detection** that scans the entire repository (including nested subprojects and monorepos) for manifest files before invoking the LLM. This prevents framework hallucination and produces more accurate `AGENTS.md` output.
+
+**What it detects:**
+- **OpenClaw** (`openclaw.json`) — treated as the primary orchestrator
+- **Node.js/JS/TS** — React, Angular, Vue, Next.js, Express, NestJS, etc. from `package.json`
+- **Python** — Django, Flask, FastAPI from `requirements.txt`, `pyproject.toml`, `Pipfile`
+- **Java/JVM** — Spring Boot, Quarkus from `pom.xml`, `build.gradle`
+- **.NET** — ASP.NET Core from `*.csproj`, `global.json`
+- **Go** — Gin, Echo, Fiber from `go.mod`
+- **Rust** — Actix, Axum, Tokio from `Cargo.toml`
+
+**Version certainty:** Versions are only reported when explicitly found in manifest/lockfiles. Never assumed.
+
+**Web grounding:** When `BRAVE_API_KEY` is set, Sylva fetches official docs for detected frameworks (version-specific when exact versions are known, latest fallback otherwise).
+
+**Debug output:** `awareness.json` is saved alongside `AGENTS.md` for full transparency.
+
 ### Environment Overrides
 - `AUTOSKILL_MODEL`: Set this to `gemini` or `anthropic` or `openai` to change the default execution provider globally without providing `-m` on every execution.
 - `GITHUB_REPO_URL`: Hardcode a repository for the CLI parser to utilize if no explicit configuration flags are provided.
+- `BRAVE_API_KEY`: Set this to enable web-grounded framework documentation retrieval via Brave Search. If not set, Sylva will still detect frameworks deterministically but will skip web reference gathering.
 
 ### Test Structure
 Unit tests are located at `tests/` which mirror the `/src` folder structure separating logical test groupings.

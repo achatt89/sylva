@@ -2,6 +2,12 @@ import { f } from "@ax-llm/ax";
 
 export const CODEBASE_ANALYSIS_SIGNATURE = f()
   .input("sourceContext", f.string())
+  .input(
+    "awarenessContext",
+    f.string(
+      "Deterministically detected framework/architecture constraints from repo manifest files. Treat this as AUTHORITATIVE — do not contradict it. Use detected stacks and versions; mark unknown/ambiguous when appropriate."
+    )
+  )
   .output(
     "projectOverview",
     f.string(
@@ -56,7 +62,7 @@ export const CODEBASE_ANALYSIS_SIGNATURE = f()
 export const CODEBASE_ANALYZER_IDENTITY = {
   name: "CodebaseAnalyzer",
   description:
-    "A hyper-detailed technical architect generating strict developer manifests. You must analyze the structural backbone, data flow, and day-to-day coding conventions of the application using recursive analysis of the source code. NEVER hallucinate frameworks; always verify by scanning actual source imports and dependency files.",
+    "A hyper-detailed technical architect generating strict developer manifests. You must analyze the structural backbone, data flow, and day-to-day coding conventions of the application using recursive analysis of the source code. NEVER hallucinate frameworks; always verify by scanning actual source imports and dependency files. CRITICAL: You will receive an awarenessContext field containing ARCHITECTURE CONSTRAINTS derived from deterministic manifest analysis. Treat these constraints as AUTHORITATIVE. Do not contradict them. Do not invent frameworks, languages, entrypoints, or tooling not present in the evidence. If OpenClaw is detected as orchestrator, include an OpenClaw Runtime section and treat other stacks as workloads/subagents. Use detected stack and versions; mark unknown/ambiguous when appropriate.",
 };
 
 export const COMPILE_CONVENTIONS_SIGNATURE = f()
@@ -78,10 +84,16 @@ export const COMPILE_CONVENTIONS_SIGNATURE = f()
   .input("documentationStandards", f.string("Documentation Standards."))
   .input("agentWorkflow", f.string("Agent Workflow / SOP."))
   .input("fewShotExamples", f.string("Few-Shot Examples."))
+  .input(
+    "awarenessContext",
+    f.string(
+      "ARCHITECTURE CONSTRAINTS (AUTHORITATIVE): Deterministically detected frameworks, versions, and architecture from manifest files. Do NOT contradict these constraints in the compiled output. The compiled conventions MUST reflect the detected stacks, version certainty levels, and orchestrator/workload structure exactly as specified. If OpenClaw is the orchestrator, the conventions must describe the OpenClaw runtime and its workloads."
+    )
+  )
   .output(
     "markdownDocument",
     f.string(
-      "Comprehensive CODEBASE_CONVENTIONS.md document formatted with clear headings, bullet points, and specific code/file snippets as evidence."
+      "Comprehensive CODEBASE_CONVENTIONS.md document formatted with clear headings, bullet points, and specific code/file snippets as evidence. The document MUST align with the ARCHITECTURE CONSTRAINTS provided in awarenessContext."
     )
   )
   .build();
@@ -92,6 +104,12 @@ export const EXTRACT_AGENTS_SECTIONS_SIGNATURE = f()
     f.string("The extracted architectural, data flow, and granular coding conventions")
   )
   .input("repositoryName", f.string("The name of the repository or project"))
+  .input(
+    "awarenessContext",
+    f.string(
+      "Deterministically detected framework/architecture constraints. AUTHORITATIVE — do not contradict. If OpenClaw orchestrator is present, include OpenClaw Runtime section. Show version certainty for each framework. Include Framework References when web refs are available."
+    )
+  )
   .output(
     "projectOverview",
     f.string(

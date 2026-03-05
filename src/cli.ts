@@ -9,6 +9,7 @@ import * as readline from "readline/promises";
 import { resolveModelConfig, getLanguageModelService, listSupportedModels } from "./modelConfig";
 import { cloneRepo, loadSourceTree, saveAgentsToDisk, compileAgentsMd } from "./utils";
 import { CodebaseConventionExtractor, AgentsMdCreator } from "./modules";
+import { runAwareness } from "./awareness";
 
 function initEnvironment() {
   const envPath = path.resolve(process.cwd(), ".env");
@@ -80,19 +81,29 @@ async function runPipeline(
 
   if (numFiles === 0) {
     console.warn(
-      "\n⚠️  Warning: The loaded source tree is empty! Check IGNORED_DIRS or ensure the repository contains supported source files."
+      "\n⚠️  The loaded source tree is empty — no supported files found.\n" +
+        "   Possible causes:\n" +
+        "   • The repository directory doesn't exist or is empty\n" +
+        "   • All files are filtered by IGNORED_DIRS (node_modules, dist, etc.)\n" +
+        "   • No files match ALLOWED_EXTENSIONS (.ts, .py, .java, .go, etc.)\n" +
+        "   Run with --help to check your --local-repository or --github-repository path."
     );
   } else {
     console.log(`✅ Extracted representation for ${numFiles} top-level file(s)/directory(ies).`);
   }
 
+  // Run Framework Awareness (deterministic, before LLM)
+  const awarenessResult = await runAwareness(repoDir, repoName);
+  const awarenessContext = awarenessResult.awarenessContext;
+
   const extractor = new CodebaseConventionExtractor(maxIterations);
-  const extractResult = await extractor.extract(sourceTree);
+  const extractResult = await extractor.extract(sourceTree, awarenessContext);
 
   // Use the PRIMARY model for RLM analysis (needs strong reasoning to avoid hallucination)
   console.log(`=> Running the Codebase Analyzer RLM workflow...`);
   const rlmResult = await extractResult.analyzer.forward(llmPrimary, {
     sourceContext: extractResult.contextString,
+    awarenessContext,
   });
 
   // Use the PRIMARY model for compiling conventions (needs to accurately synthesize)
@@ -100,7 +111,12 @@ async function runPipeline(
 
   // Use MINI model for section extraction (cheaper, deterministic task)
   const creator = new AgentsMdCreator();
-  const sections = await creator.extractAndCompileSections(llmMini, conventionsMarkdown, repoName);
+  const sections = await creator.extractAndCompileSections(
+    llmMini,
+    conventionsMarkdown,
+    repoName,
+    awarenessContext
+  );
   const finalAgentsMd = compileAgentsMd(sections, repoName);
 
   saveAgentsToDisk(repoName, finalAgentsMd);
@@ -165,7 +181,14 @@ async function main() {
 
         process.exit(0);
       } catch (err: any) {
-        console.error(`\n❌ Error occurred: ${err.message}`);
+        console.error(
+          `\n❌ Pipeline failed: ${err.message}\n` +
+            `   If this is an API error, check that your API key is valid and has sufficient quota.\n` +
+            `   If this is unexpected, report it at: https://github.com/achatt89/sylva/issues`
+        );
+        if (err.stack) {
+          console.error(`\n   Stack trace:\n   ${err.stack.split("\n").slice(1, 5).join("\n   ")}`);
+        }
         process.exit(1);
       }
     });

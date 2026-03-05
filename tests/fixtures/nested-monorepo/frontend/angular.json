@@ -1,0 +1,15 @@
+{
+    "version": 1,
+    "projects": {
+        "frontend-app": {
+            "projectType": "application",
+            "root": "",
+            "sourceRoot": "src",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser"
+                }
+            }
+        }
+    }
+}
