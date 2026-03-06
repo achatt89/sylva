@@ -28,7 +28,8 @@ export type SignalKind =
   | "cron"
   | "hook"
   | "skill"
-  | "plugin";
+  | "plugin"
+  | "integration";
 
 /** Evidence for a detected signal */
 export interface SignalEvidence {

@@ -7,78 +7,18 @@
 import * as fs from "fs";
 import * as path from "path";
 import { ManifestFile } from "./types";
+import {
+  SCAN_IGNORE_DIRS,
+  MANIFEST_EXACT_NAMES as EXACT_NAMES,
+  MANIFEST_EXTENSION_PATTERNS,
+  MAX_MANIFEST_FILE_SIZE,
+} from "../constants";
 
 /** Directories to skip during scanning */
-const SCAN_IGNORE_DIRS = new Set([
-  ".git",
-  "node_modules",
-  "__pycache__",
-  "venv",
-  ".venv",
-  "env",
-  ".env",
-  "dist",
-  "build",
-  "target",
-  "vendor",
-  "bin",
-  "obj",
-  "out",
-  "coverage",
-  "logs",
-  "tmp",
-  "temp",
-  ".idea",
-  ".vscode",
-  ".next",
-  ".nuxt",
-  ".svelte-kit",
-  ".angular",
-  ".DS_Store",
-]);
+const IGNORE_DIRS_SET = new Set(SCAN_IGNORE_DIRS);
 
 /** Exact filenames to match as manifests */
-const MANIFEST_EXACT_NAMES = new Set([
-  "package.json",
-  "package-lock.json",
-  "yarn.lock",
-  "pnpm-lock.yaml",
-  "openclaw.json",
-  ".openclaw.json",
-  "angular.json",
-  "workspace.json",
-  "project.json",
-  "pyproject.toml",
-  "requirements.txt",
-  "poetry.lock",
-  "Pipfile",
-  "Pipfile.lock",
-  "setup.cfg",
-  "setup.py",
-  "pom.xml",
-  "build.gradle",
-  "build.gradle.kts",
-  "settings.gradle",
-  "settings.gradle.kts",
-  "gradle.properties",
-  "go.mod",
-  "go.sum",
-  "Cargo.toml",
-  "Cargo.lock",
-  "global.json",
-  "packages.lock.json",
-  "Dockerfile",
-  "docker-compose.yml",
-  "docker-compose.yaml",
-  "Makefile",
-  ".gitlab-ci.yml",
-]);
-
-/** File extension patterns for manifests (e.g. *.csproj) */
-const MANIFEST_EXTENSION_PATTERNS = [".csproj", ".fsproj", ".vbproj"];
-
-/** Maximum file size in characters to read */
-const MAX_FILE_SIZE = 500_000;
+const MANIFEST_EXACT_NAMES = new Set(EXACT_NAMES);
 
 /**
  * Check if a filename matches a known manifest pattern.
@@ -115,7 +55,7 @@ export function scanManifests(repoPath: string): ManifestFile[] {
 
     for (const entry of entries) {
       // Skip ignored directories and hidden dirs (except specific manifest patterns)
-      if (SCAN_IGNORE_DIRS.has(entry)) continue;
+      if (IGNORE_DIRS_SET.has(entry)) continue;
 
       const fullPath = path.join(dir, entry);
       let stat: fs.Stats;
@@ -131,7 +71,11 @@ export function scanManifests(repoPath: string): ManifestFile[] {
         if (entry.startsWith(".") && depth > 0) continue;
         walk(fullPath, depth + 1);
       } else if (stat.isFile()) {
-        if (isManifestFile(entry) && stat.size <= MAX_FILE_SIZE) {
+        if (isManifestFile(entry)) {
+          if (stat.size > MAX_MANIFEST_FILE_SIZE) {
+            // File is too large, skip it
+            continue;
+          }
           results.push({
             absolutePath: fullPath,
             relativePath: path.relative(absoluteRoot, fullPath),

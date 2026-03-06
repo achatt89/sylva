@@ -12,6 +12,7 @@ import { parseAllManifests } from "./manifestParsers";
 import { resolveAllVersions } from "./versionResolver";
 import { detectStacks, detectArchitecture, formatVersionForDisplay } from "./detector";
 import { gatherReferences } from "./webGrounding";
+import { scanSourceFiles } from "./sourceScanner";
 
 /**
  * The ARCHITECTURE CONSTRAINTS block injected into LLM context.
@@ -58,6 +59,16 @@ function buildConstraintsBlock(
   // OpenClaw-specific constraint sections (only when detected)
   if (hasOrchestrator) {
     appendOpenClawConstraints(lines, signals);
+  }
+
+  // External Integrations (source code scanner)
+  const integrations = signals.filter((s) => s.kind === "integration");
+  if (integrations.length > 0) {
+    lines.push("", "EXTERNAL INTEGRATIONS (Discovered in Source Code):");
+    for (const sig of integrations) {
+      lines.push(`  - ${sig.frameworkName}`);
+      lines.push(`    Evidence: ${sig.evidence.reason} [${sig.evidence.file}]`);
+    }
   }
 
   lines.push("=== END ARCHITECTURE CONSTRAINTS ===");
@@ -334,8 +345,18 @@ export async function runAwareness(repoPath: string, repoName: string): Promise<
 
   // Step 2: Parse all manifests into signals
   console.log("  → Parsing manifests...");
-  const signals = parseAllManifests(manifests);
-  console.log(`  → Generated ${signals.length} signal(s)`);
+  const manifestSignals = parseAllManifests(manifests);
+  console.log(`  → Generated ${manifestSignals.length} signal(s) from manifests`);
+
+  // Step 2.5: Scan source code for external integrations
+  console.log("  → Scanning source code for external integrations...");
+  const integrationSignals = scanSourceFiles(repoPath);
+  if (integrationSignals.length > 0) {
+    console.log(`  → Discovered ${integrationSignals.length} integration(s) in source code`);
+  }
+
+  // Merge all signals
+  const signals = [...manifestSignals, ...integrationSignals];
 
   // Step 3: Resolve versions
   console.log("  → Resolving versions...");

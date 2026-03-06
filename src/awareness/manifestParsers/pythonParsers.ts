@@ -6,24 +6,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Signal, ManifestFile, VersionInfo } from "../types";
-
-/** Known Python frameworks and their detection patterns */
-const PYTHON_FRAMEWORKS: { pkg: string; frameworkId: string; frameworkName: string }[] = [
-  { pkg: "django", frameworkId: "django", frameworkName: "Django" },
-  { pkg: "flask", frameworkId: "flask", frameworkName: "Flask" },
-  { pkg: "fastapi", frameworkId: "fastapi", frameworkName: "FastAPI" },
-  { pkg: "uvicorn", frameworkId: "uvicorn", frameworkName: "Uvicorn" },
-  { pkg: "starlette", frameworkId: "starlette", frameworkName: "Starlette" },
-  { pkg: "celery", frameworkId: "celery", frameworkName: "Celery" },
-  { pkg: "sqlalchemy", frameworkId: "sqlalchemy", frameworkName: "SQLAlchemy" },
-  { pkg: "pandas", frameworkId: "pandas", frameworkName: "Pandas" },
-  { pkg: "numpy", frameworkId: "numpy", frameworkName: "NumPy" },
-  { pkg: "tensorflow", frameworkId: "tensorflow", frameworkName: "TensorFlow" },
-  { pkg: "torch", frameworkId: "pytorch", frameworkName: "PyTorch" },
-  { pkg: "scikit-learn", frameworkId: "scikit-learn", frameworkName: "scikit-learn" },
-  { pkg: "pytest", frameworkId: "pytest", frameworkName: "pytest" },
-  { pkg: "gunicorn", frameworkId: "gunicorn", frameworkName: "Gunicorn" },
-];
+import { PYTHON_FRAMEWORKS } from "../../constants";
 
 function parsePythonVersion(versionSpec: string, sourceFile: string, pkgName: string): VersionInfo {
   if (!versionSpec || versionSpec.trim() === "") {

@@ -7,34 +7,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Signal, ManifestFile, VersionInfo } from "../types";
-
-/** Framework detection rules: dep name patterns → framework info */
-const FRAMEWORK_DETECTION_RULES: {
-  depPattern: string | RegExp;
-  frameworkId: string;
-  frameworkName: string;
-}[] = [
-  { depPattern: "@angular/core", frameworkId: "angular", frameworkName: "Angular" },
-  { depPattern: "react", frameworkId: "react", frameworkName: "React" },
-  { depPattern: "react-dom", frameworkId: "react-dom", frameworkName: "React DOM" },
-  { depPattern: "next", frameworkId: "nextjs", frameworkName: "Next.js" },
-  { depPattern: "vue", frameworkId: "vue", frameworkName: "Vue.js" },
-  { depPattern: "nuxt", frameworkId: "nuxt", frameworkName: "Nuxt" },
-  { depPattern: "@sveltejs/kit", frameworkId: "sveltekit", frameworkName: "SvelteKit" },
-  { depPattern: "svelte", frameworkId: "svelte", frameworkName: "Svelte" },
-  { depPattern: "express", frameworkId: "express", frameworkName: "Express" },
-  { depPattern: "@nestjs/core", frameworkId: "nestjs", frameworkName: "NestJS" },
-  { depPattern: "fastify", frameworkId: "fastify", frameworkName: "Fastify" },
-  { depPattern: "koa", frameworkId: "koa", frameworkName: "Koa" },
-  { depPattern: "typescript", frameworkId: "typescript", frameworkName: "TypeScript" },
-  { depPattern: "@ax-llm/ax", frameworkId: "ax-llm", frameworkName: "Ax-LLM" },
-  { depPattern: "electron", frameworkId: "electron", frameworkName: "Electron" },
-  { depPattern: "react-native", frameworkId: "react-native", frameworkName: "React Native" },
-  { depPattern: "tailwindcss", frameworkId: "tailwindcss", frameworkName: "Tailwind CSS" },
-  { depPattern: "vite", frameworkId: "vite", frameworkName: "Vite" },
-  { depPattern: "webpack", frameworkId: "webpack", frameworkName: "Webpack" },
-  { depPattern: "esbuild", frameworkId: "esbuild", frameworkName: "esbuild" },
-];
+import { NPM_FRAMEWORKS } from "../../constants";
 
 /**
  * Determine version certainty from a semver-like string.
@@ -114,7 +87,7 @@ export function parsePackageJson(manifest: ManifestFile): Signal[] {
   });
 
   // Detect frameworks from dependencies
-  for (const rule of FRAMEWORK_DETECTION_RULES) {
+  for (const rule of NPM_FRAMEWORKS) {
     const depName = typeof rule.depPattern === "string" ? rule.depPattern : undefined;
     let matchedDep: string | undefined;
     let matchedVersion: string | undefined;

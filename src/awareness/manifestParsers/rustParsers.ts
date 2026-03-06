@@ -6,18 +6,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Signal, ManifestFile, VersionInfo } from "../types";
-
-/** Known Rust frameworks/libraries */
-const RUST_FRAMEWORKS: { crate: string; frameworkId: string; frameworkName: string }[] = [
-  { crate: "actix-web", frameworkId: "actix-web", frameworkName: "Actix Web" },
-  { crate: "rocket", frameworkId: "rocket", frameworkName: "Rocket" },
-  { crate: "axum", frameworkId: "axum", frameworkName: "Axum" },
-  { crate: "tokio", frameworkId: "tokio", frameworkName: "Tokio" },
-  { crate: "serde", frameworkId: "serde", frameworkName: "Serde" },
-  { crate: "diesel", frameworkId: "diesel", frameworkName: "Diesel" },
-  { crate: "sqlx", frameworkId: "sqlx", frameworkName: "SQLx" },
-  { crate: "warp", frameworkId: "warp", frameworkName: "Warp" },
-];
+import { RUST_FRAMEWORKS } from "../../constants";
 
 /**
  * Parse Cargo.toml

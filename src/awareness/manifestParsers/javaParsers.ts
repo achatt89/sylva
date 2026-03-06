@@ -6,26 +6,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Signal, ManifestFile, VersionInfo } from "../types";
-
-/** Known Java frameworks */
-const JAVA_FRAMEWORKS: { groupArtifact: string; frameworkId: string; frameworkName: string }[] = [
-  {
-    groupArtifact: "org.springframework.boot",
-    frameworkId: "spring-boot",
-    frameworkName: "Spring Boot",
-  },
-  {
-    groupArtifact: "org.springframework",
-    frameworkId: "spring",
-    frameworkName: "Spring Framework",
-  },
-  { groupArtifact: "io.quarkus", frameworkId: "quarkus", frameworkName: "Quarkus" },
-  { groupArtifact: "io.micronaut", frameworkId: "micronaut", frameworkName: "Micronaut" },
-  { groupArtifact: "org.hibernate", frameworkId: "hibernate", frameworkName: "Hibernate" },
-  { groupArtifact: "junit", frameworkId: "junit", frameworkName: "JUnit" },
-  { groupArtifact: "org.junit", frameworkId: "junit5", frameworkName: "JUnit 5" },
-  { groupArtifact: "org.apache.kafka", frameworkId: "kafka", frameworkName: "Apache Kafka" },
-];
+import { JAVA_FRAMEWORKS } from "../../constants";
 
 /**
  * Parse pom.xml (Maven)

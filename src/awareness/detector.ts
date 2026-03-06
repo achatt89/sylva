@@ -12,38 +12,9 @@ import {
   VersionInfo,
 } from "./types";
 import { resolveVersion } from "./versionResolver";
+import { CONFIDENCE_SCORES } from "../constants";
 
 /** Confidence scoring rules */
-const CONFIDENCE_SCORES: Record<string, number> = {
-  orchestrator: 95,
-  angular: 85,
-  react: 80,
-  nextjs: 85,
-  vue: 80,
-  nuxt: 85,
-  svelte: 80,
-  sveltekit: 85,
-  express: 75,
-  nestjs: 85,
-  fastify: 75,
-  django: 85,
-  flask: 75,
-  fastapi: 80,
-  "spring-boot": 90,
-  spring: 80,
-  "java-maven": 70,
-  "java-gradle": 70,
-  dotnet: 80,
-  "aspnet-core": 85,
-  go: 80,
-  rust: 80,
-  "actix-web": 85,
-  axum: 85,
-  nodejs: 60,
-  python: 60,
-  typescript: 65,
-  docker: 50,
-};
 
 /**
  * Detect stacks from signals.
@@ -63,7 +34,8 @@ export function detectStacks(signals: Signal[]): StackInfo[] {
       signal.kind === "cron" ||
       signal.kind === "hook" ||
       signal.kind === "skill" ||
-      signal.kind === "plugin"
+      signal.kind === "plugin" ||
+      signal.kind === "integration"
     )
       continue;
 

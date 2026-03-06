@@ -21,6 +21,9 @@ function cacheKey(query: string): string {
   return crypto.createHash("md5").update(query).digest("hex");
 }
 
+let lastRequestTime = 0;
+const RATE_LIMIT_MS = 1100; // 1.1 seconds to be safe
+
 /**
  * Search Brave API for a query. Returns parsed results.
  * Caches results to disk if cacheDir is provided.
@@ -51,6 +54,14 @@ export async function braveSearch(
 
   try {
     const url = `${BRAVE_SEARCH_URL}?q=${encodeURIComponent(query)}&count=5`;
+
+    const now = Date.now();
+    const timeSinceLast = now - lastRequestTime;
+    if (timeSinceLast < RATE_LIMIT_MS) {
+      await new Promise((resolve) => setTimeout(resolve, RATE_LIMIT_MS - timeSinceLast));
+    }
+    lastRequestTime = Date.now();
+
     const response = await fetch(url, {
       headers: {
         Accept: "application/json",
@@ -59,8 +70,11 @@ export async function braveSearch(
       },
     });
 
+    lastRequestTime = Date.now();
+
     if (!response.ok) {
       const statusText = response.statusText || "Unknown error";
+      const errorMsg = `HTTP ${response.status} (${statusText})`;
       if (response.status === 401 || response.status === 403) {
         console.warn(
           `❌ Brave Search API authentication failed (HTTP ${response.status}: ${statusText}).\n` +
@@ -68,18 +82,20 @@ export async function braveSearch(
             `   Get a valid key at: https://brave.com/search/api/\n` +
             `   Framework detection still works — only web doc references are affected.`
         );
+        throw new Error(`Authentication failed ${errorMsg}. Valid API key required.`);
       } else if (response.status === 429) {
         console.warn(
           `⚠️  Brave Search API rate limit exceeded (HTTP 429).\n` +
             `   Query: "${query}"\n` +
             `   Wait a moment and retry, or check your Brave API plan limits.`
         );
+        throw new Error(`Rate limit exceeded ${errorMsg}.`);
       } else {
         console.warn(
           `⚠️  Brave Search API returned HTTP ${response.status} (${statusText}) for query: "${query}"`
         );
+        throw new Error(`Brave Search API error: ${errorMsg}`);
       }
-      return [];
     }
 
     const data = (await response.json()) as Record<string, unknown>;
@@ -107,10 +123,10 @@ export async function braveSearch(
         `⚠️  Brave Search network error for query "${query}": ${errMsg}\n` +
           `   Check your internet connection. Framework detection is unaffected.`
       );
-    } else {
+    } else if (!errMsg.includes("HTTP")) {
       console.warn(`⚠️  Brave Search failed for query "${query}": ${errMsg}`);
     }
-    return [];
+    throw error;
   }
 }
 

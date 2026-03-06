@@ -61,6 +61,17 @@ Framework Awareness solves this by providing **deterministic evidence** before t
 | **Rust** | `Cargo.toml` | Actix, Axum, Rocket, Tokio, Diesel |
 | **Other** | `angular.json`, `Dockerfile` | Angular workspaces, Docker |
 
+## Source Code Integration Scanner
+
+In addition to manifest scanning, Sylva includes a **Source Code Integration Scanner** that reads actual code files (`.ts`, `.py`, `.go`, etc.), deployment configs (`fly.toml`, `netlify.toml`), and Dockerfiles to detect external service integrations (e.g., Wix, Stripe, AWS, Fly.io, Instagram) that don't appear in standard package managers.
+
+- **Detection Strategies**: 
+  - **Platform Config Files**: Detects deployment platforms by exact file name matches (e.g. `fly.toml`, `railway.json`).
+  - **Dockerfile Analysis**: Fallback strategy that inspects `Dockerfile` or `docker-compose.yml` for platform-specific base images or commands (e.g. `flyctl`, `public.ecr.aws`).
+  - **Code Patterns**: Looks for known SaaS API domains in strings, well-known SDK imports, and service-specific environment variable references inside the source code.
+- **Strict Ignore Rules**: It completely respects your project's `.gitignore` and has hardcoded exclusions for `.env` files to prevent secret leakage. It explicitly *never* reads `URL` or generic variables from `.env` files to prevent false positives.
+- **Signals**: Discovered integrations are emitted as `integration` signals and appended directly to the LLM's `EXTERNAL INTEGRATIONS` constraint block.
+
 ## Version Certainty
 
 Sylva uses three certainty levels:

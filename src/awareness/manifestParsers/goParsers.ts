@@ -6,17 +6,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { Signal, ManifestFile } from "../types";
-
-/** Known Go frameworks/libraries */
-const GO_FRAMEWORKS: { module: string; frameworkId: string; frameworkName: string }[] = [
-  { module: "github.com/gin-gonic/gin", frameworkId: "gin", frameworkName: "Gin" },
-  { module: "github.com/labstack/echo", frameworkId: "echo", frameworkName: "Echo" },
-  { module: "github.com/gofiber/fiber", frameworkId: "fiber", frameworkName: "Fiber" },
-  { module: "github.com/gorilla/mux", frameworkId: "gorilla-mux", frameworkName: "Gorilla Mux" },
-  { module: "gorm.io/gorm", frameworkId: "gorm", frameworkName: "GORM" },
-  { module: "github.com/stretchr/testify", frameworkId: "testify", frameworkName: "Testify" },
-  { module: "google.golang.org/grpc", frameworkId: "grpc-go", frameworkName: "gRPC-Go" },
-];
+import { GO_FRAMEWORKS } from "../../constants";
 
 /**
  * Parse go.mod
