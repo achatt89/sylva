@@ -1,34 +1,103 @@
 {
+    "meta": {
+        "lastTouchedVersion": "2026.2.17",
+        "lastTouchedAt": "2026-02-23T20:41:40.221Z"
+    },
     "agents": {
         "defaults": {
-            "model": "gpt-4o",
-            "maxConcurrent": 3,
-            "workspace": "/workspace"
+            "model": {
+                "primary": "google/gemini-3-flash-preview"
+            },
+            "models": {
+                "google/gemini-3-flash-preview": {},
+                "openai/gpt-5.2": {}
+            },
+            "workspace": "../workspace",
+            "maxConcurrent": 4,
+            "subagents": {
+                "maxConcurrent": 8
+            },
+            "compaction": {
+                "mode": "safeguard"
+            }
         }
     },
     "tools": {
-        "web.search": {
-            "enabled": true,
-            "provider": "brave",
-            "config": {
-                "apiKeyEnv": "BRAVE_API_KEY"
+        "web": {
+            "search": {
+                "enabled": true,
+                "apiKey": "${BRAVE_API_KEY}"
+            },
+            "fetch": {
+                "enabled": true
             }
-        },
-        "web.fetch": {
-            "enabled": true
+        }
+    },
+    "hooks": {
+        "internal": {
+            "enabled": true,
+            "entries": {
+                "boot-md": {
+                    "enabled": true
+                },
+                "silvio": {
+                    "enabled": true,
+                    "path": "workspace/hooks/silvio-status.sh",
+                    "description": "Trigger the Silvio Algorithmic Trading status fetcher."
+                },
+                "silvio-start": {
+                    "enabled": true,
+                    "path": "workspace/hooks/silvio-start.sh",
+                    "description": "Boot up the background Silvio engine."
+                }
+            }
         }
     },
     "channels": {
         "telegram": {
             "enabled": true,
-            "token_env": "TELEGRAM_BOT_TOKEN"
+            "dmPolicy": "allowlist",
+            "groupPolicy": "allowlist",
+            "streamMode": "partial"
         },
         "whatsapp": {
-            "enabled": false
+            "dmPolicy": "allowlist",
+            "selfChatMode": false,
+            "mediaMaxMb": 50
         }
     },
     "gateway": {
-        "port": 8080,
-        "host": "0.0.0.0"
+        "port": 18789,
+        "mode": "local",
+        "bind": "loopback",
+        "auth": {
+            "mode": "token"
+        },
+        "nodes": {
+            "denyCommands": [
+                "camera.snap",
+                "screen.record"
+            ]
+        }
+    },
+    "plugins": {
+        "entries": {
+            "whatsapp": {
+                "enabled": true
+            },
+            "telegram": {
+                "enabled": true
+            },
+            "discord": {
+                "enabled": true
+            }
+        }
+    },
+    "commands": {
+        "native": "auto",
+        "nativeSkills": "auto"
+    },
+    "messages": {
+        "ackReactionScope": "group-mentions"
     }
 }

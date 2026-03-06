@@ -19,7 +19,8 @@ Framework Awareness solves this by providing **deterministic evidence** before t
            v
 ┌──────────────────────┐
 │ 2. Signal Extraction │   Specialized parsers emit typed Signals:
-│    manifestParsers   │   framework, version, tooling, orchestrator
+│    manifestParsers   │   framework, version, tooling, orchestrator,
+│                      │   agent, hook, skill, subagent, plugin, heartbeat
 └──────────┬───────────┘   with evidence (file + reason)
            │
            v
@@ -51,7 +52,7 @@ Framework Awareness solves this by providing **deterministic evidence** before t
 
 | Ecosystem | Manifest Files | Detected Frameworks |
 |-----------|---------------|-------------------|
-| **OpenClaw** | `openclaw.json` | OpenClaw (orchestrator), tools, channels |
+| **OpenClaw** | `openclaw.json`, `.openclaw.json` | OpenClaw orchestrator, agent config, hooks, skills, subagents, plugins, heartbeat, gateway, channels |
 | **Node.js/JS/TS** | `package.json` | React, Angular, Vue, Next.js, Nuxt, Svelte, Express, NestJS, Fastify, TypeScript |
 | **Python** | `requirements.txt`, `pyproject.toml`, `Pipfile`, `setup.cfg` | Django, Flask, FastAPI, SQLAlchemy, Celery |
 | **Java/JVM** | `pom.xml`, `build.gradle(.kts)` | Spring Boot, Quarkus, Micronaut, Hibernate |
@@ -135,3 +136,59 @@ After every run, Sylva saves `awareness.json` alongside `AGENTS.md` with the ful
 ```
 
 Use this to verify that the detection is correct before reviewing the generated `AGENTS.md`.
+
+## Web Grounding Output (`grounding.json`)
+
+A separate `grounding.json` file is saved alongside `awareness.json` on **every scan**:
+
+```json
+{
+  "generatedAt": "2026-03-06T09:15:00.000Z",
+  "totalReferences": 10,
+  "frameworksCovered": 3,
+  "references": [...],
+  "errors": [
+    {
+      "reason": "BRAVE_API_KEY not set",
+      "impact": "Web grounding disabled",
+      "resolution": "Set BRAVE_API_KEY in your .env file"
+    }
+  ]
+}
+```
+
+If web grounding fails (missing API key, rate limits, network errors), the failure reason appears both in terminal output and in the `errors` array of `grounding.json`.
+
+## OpenClaw Deep Parsing
+
+When `openclaw.json` or `.openclaw.json` is detected, Sylva performs deep extraction:
+
+| Section | Signal Kind | What's Extracted |
+|---------|-------------|------------------|
+| `meta` | orchestrator | OpenClaw version from `lastTouchedVersion` |
+| `agents.defaults` | agent | Primary model, model catalog, workspace path, concurrency |
+| `hooks.internal.entries` | hook | Each hook with path, description, enabled status |
+| `plugins.entries` | plugin | Each plugin with enabled/disabled status |
+| `gateway` | tooling | Port, auth mode, Tailscale, denied commands |
+| `channels` | tooling | Policies, stream mode, media limits per channel |
+| `tools` | tooling | Sub-capabilities per tool |
+| Workspace `skills/*.md` | skill | Skill name + first-line description |
+| Workspace `subagents/*/` | subagent | Directory name + file listing + protocol |
+| Workspace `HEARTBEAT.md` | heartbeat | Active/inactive status |
+| Workspace `.md` files | agent | IDENTITY.md (agent name), AGENTS.md, MEMORY.md, etc. |
+
+All OpenClaw-specific signals are also injected into the `ARCHITECTURE CONSTRAINTS` block:
+
+```
+OPENCLAW HOOKS:
+  - /silvio: Trigger the Silvio Trading status fetcher.
+  - /silvio-start: Boot up the background Silvio engine.
+
+OPENCLAW SKILLS:
+  - Trading Skill: Invokes the trading subagent...
+
+OPENCLAW SUBAGENTS:
+  - Instagram Knowledge Ingestor: Processes reels into manifests
+    Files: protocol.md, apify_scrape.py, gemini_visual.py
+```
+

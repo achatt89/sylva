@@ -16,7 +16,19 @@ export interface VersionInfo {
 }
 
 /** Signal kinds emitted by manifest parsers */
-export type SignalKind = "framework" | "version" | "orchestrator" | "entrypoint" | "tooling";
+export type SignalKind =
+  | "framework"
+  | "version"
+  | "orchestrator"
+  | "entrypoint"
+  | "tooling"
+  | "agent"
+  | "subagent"
+  | "heartbeat"
+  | "cron"
+  | "hook"
+  | "skill"
+  | "plugin";
 
 /** Evidence for a detected signal */
 export interface SignalEvidence {

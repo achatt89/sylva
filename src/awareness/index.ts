@@ -6,7 +6,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { AwarenessResult, StackInfo, VersionInfo } from "./types";
+import { AwarenessResult, Signal, StackInfo, VersionInfo } from "./types";
 import { scanManifests } from "./manifestScanner";
 import { parseAllManifests } from "./manifestParsers";
 import { resolveAllVersions } from "./versionResolver";
@@ -20,7 +20,8 @@ import { gatherReferences } from "./webGrounding";
 function buildConstraintsBlock(
   stacks: StackInfo[],
   resolvedVersions: Map<string, VersionInfo>,
-  hasOrchestrator: boolean
+  hasOrchestrator: boolean,
+  signals: Signal[]
 ): string {
   const lines: string[] = [
     "=== ARCHITECTURE CONSTRAINTS (AUTHORITATIVE) ===",
@@ -54,8 +55,83 @@ function buildConstraintsBlock(
     }
   }
 
+  // OpenClaw-specific constraint sections (only when detected)
+  if (hasOrchestrator) {
+    appendOpenClawConstraints(lines, signals);
+  }
+
   lines.push("=== END ARCHITECTURE CONSTRAINTS ===");
   return lines.join("\n");
+}
+
+/**
+ * Append OpenClaw-specific sections to the constraints block.
+ * Groups signals by kind (agent, hook, skill, subagent, plugin, heartbeat).
+ */
+function appendOpenClawConstraints(lines: string[], signals: Signal[]): void {
+  // Agent config
+  const agentSignals = signals.filter((s) => s.kind === "agent");
+  if (agentSignals.length > 0) {
+    lines.push("", "OPENCLAW AGENT CONFIG:");
+    for (const sig of agentSignals) {
+      lines.push(`  - ${sig.frameworkName}: ${sig.evidence.excerpt}`);
+    }
+  }
+
+  // Hooks
+  const hookSignals = signals.filter((s) => s.kind === "hook");
+  if (hookSignals.length > 0) {
+    lines.push("", "OPENCLAW HOOKS:");
+    for (const sig of hookSignals) {
+      const name = sig.frameworkName.replace("OpenClaw Hook: ", "");
+      lines.push(`  - /${name}: ${sig.evidence.reason}`);
+    }
+  }
+
+  // Skills
+  const skillSignals = signals.filter((s) => s.kind === "skill");
+  if (skillSignals.length > 0) {
+    lines.push("", "OPENCLAW SKILLS:");
+    for (const sig of skillSignals) {
+      lines.push(
+        `  - ${sig.frameworkName.replace("OpenClaw Skill: ", "")}: ${sig.evidence.reason}`
+      );
+    }
+  }
+
+  // Subagents
+  const subagentSignals = signals.filter((s) => s.kind === "subagent");
+  if (subagentSignals.length > 0) {
+    lines.push("", "OPENCLAW SUBAGENTS:");
+    for (const sig of subagentSignals) {
+      lines.push(
+        `  - ${sig.frameworkName.replace("OpenClaw Subagent: ", "")}: ${sig.evidence.reason}`
+      );
+      if (sig.evidence.excerpt) {
+        lines.push(`    ${sig.evidence.excerpt}`);
+      }
+    }
+  }
+
+  // Plugins
+  const pluginSignals = signals.filter((s) => s.kind === "plugin");
+  if (pluginSignals.length > 0) {
+    lines.push("", "OPENCLAW PLUGINS:");
+    for (const sig of pluginSignals) {
+      lines.push(
+        `  - ${sig.frameworkName.replace("OpenClaw Plugin: ", "")}: ${sig.evidence.excerpt}`
+      );
+    }
+  }
+
+  // Heartbeat
+  const heartbeatSignals = signals.filter((s) => s.kind === "heartbeat");
+  if (heartbeatSignals.length > 0) {
+    lines.push("", "OPENCLAW HEARTBEAT:");
+    for (const sig of heartbeatSignals) {
+      lines.push(`  - ${sig.evidence.excerpt}`);
+    }
+  }
 }
 
 /**
@@ -166,6 +242,76 @@ function saveAwarenessJson(
 }
 
 /**
+ * Save grounding.json for web grounding transparency.
+ * Always saved — contains references + structured errors.
+ */
+function saveGroundingJson(
+  repoName: string,
+  webReferences: AwarenessResult["webReferences"],
+  errors: string[],
+  baseDir: string = "projects"
+): void {
+  const folderName = repoName.toLowerCase().replace(/\s+/g, "-");
+  const targetDir = path.join(baseDir, folderName);
+  fs.mkdirSync(targetDir, { recursive: true });
+
+  const filePath = path.join(targetDir, "grounding.json");
+  try {
+    // Build structured error entries
+    const structuredErrors = errors.map((err) => {
+      // Parse known error patterns
+      if (err.includes("BRAVE_API_KEY not set")) {
+        return {
+          reason: "BRAVE_API_KEY not set",
+          impact: "Web grounding disabled — no documentation references gathered",
+          resolution:
+            "Set BRAVE_API_KEY in your .env file. Get a free key at https://brave.com/search/api/",
+        };
+      }
+      if (err.includes("rate limit") || err.includes("HTTP 429")) {
+        const queryMatch = err.match(/Query: "([^"]+)"/);
+        return {
+          query: queryMatch ? queryMatch[1] : undefined,
+          reason: "Brave Search API rate limit exceeded (HTTP 429)",
+          impact: "Results missing for this query",
+          resolution: "Wait a moment and retry, or check your Brave API plan limits",
+        };
+      }
+      if (err.includes("Web search failed")) {
+        const queryMatch = err.match(/for "([^"]+)"/);
+        const reasonMatch = err.match(/: (.+)$/);
+        return {
+          query: queryMatch ? queryMatch[1] : undefined,
+          reason: reasonMatch ? reasonMatch[1] : err,
+          impact: "Results missing for this query",
+        };
+      }
+      return {
+        reason: err,
+        impact: "Unknown web grounding error",
+      };
+    });
+
+    const grounding = {
+      generatedAt: new Date().toISOString(),
+      totalReferences: webReferences.reduce((sum, ref) => sum + ref.results.length, 0),
+      frameworksCovered: webReferences.length,
+      references: webReferences,
+      errors: structuredErrors,
+    };
+
+    fs.writeFileSync(filePath, JSON.stringify(grounding, null, 2), "utf-8");
+    console.log(`✅ Saved grounding.json to: ${filePath}`);
+  } catch (error) {
+    console.warn(
+      `⚠️  Could not save grounding.json to ${filePath}: ${(error as Error).message}\n` +
+        `   This is a debug file and does not affect AGENTS.md generation.\n` +
+        `   Check disk space and directory write permissions if you need this output.`
+    );
+  }
+}
+
+/**
  * Run the full awareness pipeline.
  * This is the main entry point called from the CLI.
  */
@@ -213,10 +359,34 @@ export async function runAwareness(repoPath: string, repoName: string): Promise<
 
   if (hasOrchestrator) {
     console.log("    🎯 OpenClaw orchestrator detected");
+
+    // Log OpenClaw-specific discoveries
+    const hookCount = signals.filter((s) => s.kind === "hook").length;
+    const skillCount = signals.filter((s) => s.kind === "skill").length;
+    const subagentCount = signals.filter((s) => s.kind === "subagent").length;
+    const pluginCount = signals.filter((s) => s.kind === "plugin").length;
+
+    if (hookCount > 0) console.log(`    🪝 ${hookCount} hook(s) detected`);
+    if (skillCount > 0) console.log(`    🎯 ${skillCount} skill(s) detected`);
+    if (subagentCount > 0) console.log(`    🤖 ${subagentCount} subagent(s) detected`);
+    if (pluginCount > 0) console.log(`    🔌 ${pluginCount} plugin(s) detected`);
+
+    const heartbeat = signals.find((s) => s.kind === "heartbeat");
+    if (heartbeat) {
+      const active =
+        heartbeat.evidence.excerpt?.includes("ACTIVE") &&
+        !heartbeat.evidence.excerpt?.includes("INACTIVE");
+      console.log(`    💓 Heartbeat: ${active ? "ACTIVE" : "INACTIVE"}`);
+    }
   }
 
-  // Step 5: Build constraints block
-  const constraintsBlock = buildConstraintsBlock(stacks, resolvedVersions, hasOrchestrator);
+  // Step 5: Build constraints block (now includes OpenClaw-specific sections)
+  const constraintsBlock = buildConstraintsBlock(
+    stacks,
+    resolvedVersions,
+    hasOrchestrator,
+    signals
+  );
 
   // Step 6: Web grounding
   console.log("  → Gathering web references...");
@@ -270,6 +440,9 @@ export async function runAwareness(repoPath: string, repoName: string): Promise<
 
   // Step 8: Save awareness.json
   saveAwarenessJson(repoName, result);
+
+  // Step 9: Save grounding.json (always, even on errors)
+  saveGroundingJson(repoName, webReferences, errors);
 
   console.log("✅ Framework Awareness scan complete\n");
 

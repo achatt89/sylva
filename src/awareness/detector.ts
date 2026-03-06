@@ -53,8 +53,19 @@ export function detectStacks(signals: Signal[]): StackInfo[] {
   const grouped = new Map<string, Signal[]>();
 
   for (const signal of signals) {
-    // Skip tooling/entrypoint signals for stack detection
-    if (signal.kind === "tooling" || signal.kind === "entrypoint") continue;
+    // Skip non-framework signals from stack detection
+    if (
+      signal.kind === "tooling" ||
+      signal.kind === "entrypoint" ||
+      signal.kind === "agent" ||
+      signal.kind === "subagent" ||
+      signal.kind === "heartbeat" ||
+      signal.kind === "cron" ||
+      signal.kind === "hook" ||
+      signal.kind === "skill" ||
+      signal.kind === "plugin"
+    )
+      continue;
 
     if (!grouped.has(signal.frameworkId)) {
       grouped.set(signal.frameworkId, []);
