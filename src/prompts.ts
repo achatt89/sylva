@@ -24,7 +24,7 @@ export const CODEBASE_ANALYSIS_SIGNATURE = f()
   .output(
     "directoryStructure",
     f.string(
-      "Directory Structure (The Map): Deeply map out all root folders, separating different sub-projects (frontend vs backend) and their specific structures."
+      "Directory Structure (The Map): Deeply map out all root folders. CRITICAL: You MUST strictly represent the EXACT physical file and directory structure provided in the source context. Do NOT invent, extrapolate, or hallucinate conceptual directories (like 'client/' or 'server/') if they do not physically exist on disk. If you see scripts like 'build:client' or 'build:server' in a package.json, interpret them as Build Output pipelines (like SSR/SSG), NOT as physical source directories unless those directories literally exist."
     )
   )
   .output(
@@ -69,7 +69,12 @@ export const COMPILE_CONVENTIONS_SIGNATURE = f()
   .input("projectOverview", f.string("Project Overview & Context."))
   .input("agentPersona", f.string("Agent Persona / Role."))
   .input("techStack", f.string("Tech Stack & Versions."))
-  .input("directoryStructure", f.string("Directory Structure (The Map)."))
+  .input(
+    "directoryStructure",
+    f.string(
+      "Directory Structure (The Map). CRITICAL: Maintain the exact PHYSICAL file and directory structure produced by the analyzer. Do NOT invent conceptual boundaries (like client/ or server/) if they are not in the provided map."
+    )
+  )
   .input("executionCommands", f.string("Execution Commands."))
   .input("codeStyleAndFormatting", f.string("Code Style & Formatting."))
   .input("architectureAndDesignPatterns", f.string("Architecture & Design Patterns."))
@@ -125,7 +130,7 @@ export const EXTRACT_AGENTS_SECTIONS_SIGNATURE = f()
   .output(
     "architecture",
     f.string(
-      "Deep mapping of where things live: directory layout, key modules, entry points, and their responsibilities. You MUST generate an ASCII diagram showing the architecture, module relationships, and sub-services. Break down complex monorepos explicitly (e.g., separating frontend code vs backend code)."
+      "Deep mapping of where things live: directory layout, key modules, entry points, and their responsibilities. You MUST generate an ASCII diagram showing the strict PHYSICAL file architecture. CRITICAL: Do NOT invent conceptual directories like 'client/' or 'server/' if they do not exist on disk. Rely solely on the provided conventions Markdown. Build targets (like SSR/SSG scripts) are behaviors, not physical source folders."
     )
   )
   .output(
